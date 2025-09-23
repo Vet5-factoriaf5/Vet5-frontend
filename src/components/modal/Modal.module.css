@@ -1,0 +1,155 @@
+.modal {
+    display: flex;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid var(--color-primary);
+}
+
+.modal__content {
+    position: relative;
+    max-width: 600px;
+    width: 70%;
+    padding: 4rem;
+    background: var(--color-background);
+    border: 1px solid var(--color-secondary);
+    border-radius: 10px;
+    box-shadow: 5px 1px 18px -5px rgba(0,0,0,0.2);
+
+    max-height: 80vh;
+    overflow-y: auto;
+    margin: 2rem auto;
+}
+
+.modal__close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 1.2rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.modal_line {
+    display: flex;
+}
+
+
+/* ========================
+    Tabs
+  ======================== */
+
+.modal__tabs {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 1rem;
+}
+
+.modal__tab-link {
+    position: relative;
+    flex: 1;
+    padding: 0.5rem;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--color-text);
+    border-bottom: 2px solid transparent;
+}
+
+.modal__tab-link::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: transparent;
+    transition: background 0.3s ease;
+}
+
+.modal__tab-link--active::after {
+    background: var(--color-primary);
+}
+
+.modal__tab-content {
+    margin-top: 1rem;
+}
+
+.modal__tab-content label {
+    display: block;
+    margin-top: 24px;
+    font-weight: 600 !important;
+}
+
+.modal__content h1 {
+    margin-bottom: 24px;
+    font-weight: 900;
+}
+
+/* ========================
+    Form and Buttons
+  ======================== */
+
+.modal__tab-content form:first-child button[type="submit"],
+.modal__tab-content form:first-child button[type="button"] {
+    margin-top: 36px;
+}
+
+.modal__buttons {
+    font-family: var(--font-family-base);
+    display: flex;
+    gap: 48px;
+    margin-top: 24px !important;
+}
+
+/* ========================
+    Separators
+  ======================== */
+
+.modal__separator {
+    height: 1px;
+    background-color: var(--color-secondary);
+    margin: 16px 0;
+}
+
+/* ========================
+    Radio Groups
+  ======================== */
+
+.modal__radio-group {
+    display: flex;
+    gap: 16px;
+}
+
+.modal__radio-group > div {
+    margin-bottom: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.modal__radio-group input[type="radio"] {
+    margin-bottom: 0;
+}
+
+/* ========================
+    Pet Blocks
+  ======================== */
+
+.pet-block {
+    border-bottom: 1px solid var(--color-medium-grey);
+    padding-bottom: 16px;
+    margin-bottom: 24px;
+}
+
+.pet-block + .pet-block {
+    margin-top: 24px;
+}
