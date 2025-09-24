@@ -1,14 +1,10 @@
 // Página de inicio de la aplicación de la veterinaria
 
-import React, { useState } from "react";
+import React from "react";
 import "./Home.css";
 import bannerImage from "../assets/images/banner-ok.webp";
-import Modal from "../components/modal/Modal.jsx";
 
 function Home() {
-    /* Estado para controlar si el modal está abierto o cerrado */
-    const [isModalOpen, setIsModalOpen] = useState(false);
-
     return (
         <div
             className="home"
@@ -42,18 +38,11 @@ function Home() {
                     <h3>¡Únete a nuestra familia!.</h3>
                     <button
                         className="btn-registrate"
-                        onClick={() => setIsModalOpen(true)}
                     >
                         Regístrate
                     </button>
                 </div>
             </header>
-
-            {/* Componente Modal que se muestra cuando isModalOpen es true */}
-            <Modal
-                isOpen={isModalOpen}
-                onClose={() => setIsModalOpen(false)}
-            />
         </div>
     );
 }
