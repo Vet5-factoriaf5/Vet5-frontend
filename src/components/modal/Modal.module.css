@@ -8,23 +8,28 @@
     justify-content: center;
     align-items: center;
     z-index: 1000;
-    background: rgba(0, 0, 0, 0.4);
+    background: rgba(0, 0, 0, 0.2);
     border: 1px solid var(--color-primary);
 }
 
 .modal__content {
     position: relative;
     max-width: 600px;
-    width: 70%;
-    padding: 4rem;
-    background: var(--color-background);
-    border: 1px solid var(--color-secondary);
+    width: 90%;
+    padding: 4rem 2rem;
+    /* background: var(--color-background);
+    border: 1px solid var(--color-secondary); */
     border-radius: 10px;
     box-shadow: 5px 1px 18px -5px rgba(0,0,0,0.2);
-
     max-height: 80vh;
     overflow-y: auto;
     margin: 2rem auto;
+    scroll-behavior: smooth;
+
+    /* Glassmorphic effect */
+  background: rgba(255, 255, 255, 0.45); /* semi-transparent white */
+  backdrop-filter: blur(10px); /* glassmorphic blur */
+  border: 1px solid var(--color-light-grey); 
 }
 
 .modal__close {
@@ -41,7 +46,6 @@
     display: flex;
 }
 
-
 /* ========================
     Tabs
   ======================== */
@@ -55,13 +59,20 @@
 .modal__tab-link {
     position: relative;
     flex: 1;
-    padding: 0.5rem;
+    padding: 0.75rem 1rem;
     background: transparent;
     border: none;
     cursor: pointer;
     font-weight: 600;
     color: var(--color-text);
     border-bottom: 2px solid transparent;
+    transition: color 0.3s ease, border-bottom-color 0.3s ease, background-color 0.3s ease;
+    border-radius: 4px 4px 0 0;
+}
+
+.modal__tab-link:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+    color: var(--color-primary);
 }
 
 .modal__tab-link::after {
@@ -101,6 +112,8 @@
 .modal__tab-content form:first-child button[type="submit"],
 .modal__tab-content form:first-child button[type="button"] {
     margin-top: 36px;
+    padding: 0.75rem 1.25rem;
+    font-size: 1rem;
 }
 
 .modal__buttons {
@@ -108,6 +121,14 @@
     display: flex;
     gap: 48px;
     margin-top: 24px !important;
+    flex-wrap: nowrap;
+}
+
+@media (max-width: 600px) {
+    .modal__buttons {
+        flex-wrap: wrap;
+        gap: 16px;
+    }
 }
 
 /* ========================
@@ -127,6 +148,7 @@
 .modal__radio-group {
     display: flex;
     gap: 16px;
+    flex-wrap: nowrap;
 }
 
 .modal__radio-group > div {
@@ -138,6 +160,13 @@
 
 .modal__radio-group input[type="radio"] {
     margin-bottom: 0;
+}
+
+@media (max-width: 600px) {
+    .modal__radio-group {
+        flex-direction: column;
+        gap: 8px;
+    }
 }
 
 /* ========================

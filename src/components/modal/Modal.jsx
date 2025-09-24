@@ -1,10 +1,19 @@
 import React, { useState, useRef } from "react";
 import styles from "./Modal.module.css";
+import "../../index.css"; // Globales de dev, aplican a todo el modal y la app
 
-const Modal = ({ isOpen, onClose }) => {
-    // State
-    const [activeTab, setActiveTab] = useState("register"); // por defecto registro
-    const [pets, setPets] = useState([{ name: "", species: "", breed: "", age: "", gender: "" }]);
+// Componente Modal principal renombrado a ModalComponent para evitar conflictos
+// Props:
+// - isOpen: boolean, controla si el modal está visible
+// - onClose: función para cerrar el modal
+const ModalComponent = ({ isOpen, onClose }) => {
+    // -------------------------
+    // Estados del componente
+    // -------------------------
+    const [activeTab, setActiveTab] = useState("register"); // Tab por defecto: registro de usuario
+    const [pets, setPets] = useState([
+        { name: "", species: "", breed: "", age: "", gender: "" },
+    ]); // Lista de mascotas, inicia con una ficha vacía
     const [formValues, setFormValues] = useState({
         name: "",
         dni: "",
@@ -12,156 +21,134 @@ const Modal = ({ isOpen, onClose }) => {
         phone: "",
         password: "",
         confirmPassword: "",
-    });
+    }); // Datos del usuario
     const [formErrors, setFormErrors] = useState({
         dni: false,
         email: false,
         phone: false,
         password: false,
         confirmPassword: false,
-    });
+    }); // Errores de validación por campo
 
-    // Refs
+    // -------------------------
+    // Refs para navegar entre inputs con Enter
+    // -------------------------
     const inputRefs = {
-        name: useRef(),
-        dni: useRef(),
-        email: useRef(),
-        phone: useRef(),
-        password: useRef(),
-        confirmPassword: useRef(),
+        name: useRef(null),
+        dni: useRef(null),
+        email: useRef(null),
+        phone: useRef(null),
+        password: useRef(null),
+        confirmPassword: useRef(null),
     };
 
-    if (!isOpen) return null; // No renderiza si está cerrado
+    // No renderiza el modal si isOpen es false
+    if (!isOpen) return null;
 
-    // Validation functions
-    const validateDni = (dni) => {
-        const dniRegex = /^[XYZ0-9]{1}[0-9]{7}[A-Z]{1}$/;
-        return dniRegex.test(dni);
+    // -------------------------
+    // Validaciones de campos
+    // -------------------------
+    const validators = {
+        dni: (val) => /^[XYZ0-9]{1}[0-9]{7}[A-Z]{1}$/.test(val),
+        email: (val) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val),
+        phone: (val) => /^[\d\s+\-()]{6,}$/.test(val),
+        password: (val) =>
+            /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{8,}$/.test(
+                val
+            ),
+        confirmPassword: (val) => val === formValues.password,
     };
 
-    const validateEmail = (email) => {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return emailRegex.test(email);
-    };
-
-    const validatePhone = (phone) => {
-        const phoneRegex = /^[\d\s+\-()]{6,}$/;
-        return phoneRegex.test(phone);
-    };
-
-    const validatePassword = (password) => {
-        const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{8,}$/;
-        return passwordRegex.test(password);
-    };
-
-    const validateConfirmPassword = (confirmPassword) => {
-        return confirmPassword === formValues.password;
-    };
-
-    // Handlers
+    // -------------------------
+    // Manejo de cambios en inputs de usuario
+    // -------------------------
     const handleInputChange = (e) => {
         const { name, value } = e.target;
+        // Actualiza el estado del formulario
         setFormValues((prev) => ({ ...prev, [name]: value }));
 
-        let isValid = true;
-        if (name === "dni") isValid = validateDni(value);
-        else if (name === "email") isValid = validateEmail(value);
-        else if (name === "phone") isValid = validatePhone(value);
-        else if (name === "password") isValid = validatePassword(value);
-        else if (name === "confirmPassword") isValid = validateConfirmPassword(value);
-
-        if (isValid) {
-            setFormErrors((prev) => ({ ...prev, [name]: false }));
+        // Valida el campo y actualiza errores
+        if (validators[name]) {
+            setFormErrors((prev) => ({ ...prev, [name]: !validators[name](value) }));
         }
     };
 
-    const handleBlur = (e) => {
-        const { name, value } = e.target;
-        let isError = false;
-
-        if (name === "dni") isError = !validateDni(value);
-        else if (name === "email") isError = !validateEmail(value);
-        else if (name === "phone") isError = !validatePhone(value);
-        else if (name === "password") isError = !validatePassword(value);
-        else if (name === "confirmPassword") isError = !validateConfirmPassword(value);
-
-        setFormErrors((prev) => ({ ...prev, [name]: isError }));
-    };
-
+    // Navegación con Enter entre inputs
     const handleKeyDown = (e) => {
         if (e.key === "Enter") {
             e.preventDefault();
-            const order = ["name", "dni", "email", "phone", "password", "confirmPassword"];
-            const currentIndex = order.indexOf(e.target.name);
-            if (currentIndex !== -1 && currentIndex < order.length - 1) {
-                const nextInputName = order[currentIndex + 1];
-                if (inputRefs[nextInputName] && inputRefs[nextInputName].current) {
-                    inputRefs[nextInputName].current.focus();
-                }
+            const order = [
+                "name",
+                "dni",
+                "email",
+                "phone",
+                "password",
+                "confirmPassword",
+            ];
+            const idx = order.indexOf(e.target.name);
+            if (idx !== -1 && idx < order.length - 1) {
+                const next = order[idx + 1];
+                inputRefs[next]?.current?.focus();
             }
         }
     };
 
+    // -------------------------
+    // Manejo de cambios en inputs de mascotas
+    // -------------------------
+    const handlePetChange = (index, field, value) => {
+        const newPets = [...pets];
+        newPets[index][field] = value;
+        setPets(newPets);
+    };
+
+    // Agregar nueva mascota
     const addPet = () => {
-        const lastPet = pets[pets.length - 1];
-        const hasValues = Object.values(lastPet).some((value) => value !== "");
-        if (hasValues) {
-            alert("Por favor, guarda o completa la mascota actual antes de añadir una nueva.");
-            return;
-        }
         setPets([...pets, { name: "", species: "", breed: "", age: "", gender: "" }]);
     };
 
+    // -------------------------
+    // Continuar al tab de mascotas tras validar usuario
+    // -------------------------
     const handleContinue = () => {
-        const dniError = !validateDni(formValues.dni);
-        const emailError = !validateEmail(formValues.email);
-        const phoneError = !validatePhone(formValues.phone);
-        const passwordError = !validatePassword(formValues.password);
-        const confirmPasswordError = formValues.confirmPassword !== formValues.password;
-
-        setFormErrors({
-            dni: dniError,
-            email: emailError,
-            phone: phoneError,
-            password: passwordError,
-            confirmPassword: confirmPasswordError,
+        const errors = {};
+        Object.keys(validators).forEach((key) => {
+            errors[key] = !validators[key](formValues[key]);
         });
+        setFormErrors(errors);
 
-        if (!dniError && !emailError && !phoneError && !passwordError && !confirmPasswordError) {
-            setActiveTab("pet");
-        }
+        const hasErrors = Object.values(errors).some((v) => v);
+        if (!hasErrors) setActiveTab("pet");
     };
 
     return (
         <div className={styles.modal}>
             <div className={`${styles["modal__content"]} form-background`}>
-                <button className={styles["modal__close"]} onClick={onClose}>
+                {/* Botón para cerrar modal */}
+                <button className={styles["modal__close"]} onClick={onClose} type="button">
                     ✕
                 </button>
+
+                {/* Título y separador */}
                 <h2>Registro</h2>
                 <div className={styles.modal__separator}></div>
 
+                {/* Tabs para cambiar entre usuario y mascotas */}
                 <div className={styles["modal__tabs"]}>
                     <button
-                        className={`${styles["modal__tab-link"]} ${
-                            activeTab === "register" ? styles["modal__tab-link--active"] : ""
-                        }`}
+                        type="button"
+                        className={`${styles["modal__tab-link"]} ${activeTab === "register" ? styles["modal__tab-link--active"] : ""
+                            }`}
                         onClick={() => setActiveTab("register")}
                     >
                         Usuario
                     </button>
                     <button
-                        className={`${styles["modal__tab-link"]} ${
-                            activeTab === "pet" ? styles["modal__tab-link--active"] : ""
-                        }`}
+                        type="button"
+                        className={`${styles["modal__tab-link"]} ${activeTab === "pet" ? styles["modal__tab-link--active"] : ""
+                            }`}
                         onClick={() => {
-                            if (
-                                !formErrors.dni &&
-                                !formErrors.email &&
-                                !formErrors.phone &&
-                                !formErrors.password &&
-                                !formErrors.confirmPassword
-                            ) {
+                            if (!Object.values(formErrors).some((v) => v)) {
                                 setActiveTab("pet");
                             }
                         }}
@@ -170,126 +157,94 @@ const Modal = ({ isOpen, onClose }) => {
                     </button>
                 </div>
 
-                <div className={styles["modal__tab-content"]}>
+                {/* Contenido de tabs */}
+                <div
+                    className={styles["modal__tab-content"]}
+                    style={{ maxHeight: "calc(100vh - 100px)", overflowY: "auto" }} // Scroll si hay muchas mascotas
+                >
+                    {/* Tab Registro Usuario */}
                     {activeTab === "register" && (
                         <form>
                             <div className={styles.modal__separator}></div>
-                            <label>Nombre</label>
-                            <input
-                                type="text"
-                                name="name"
-                                value={formValues.name}
-                                onChange={handleInputChange}
-                                onKeyDown={handleKeyDown}
-                                ref={inputRefs.name}
-                            />
 
-                            <label htmlFor="dni">DNI | NIE</label>
-                            <input
-                                type="text"
-                                id="dni"
-                                name="dni"
-                                pattern="[XYZ0-9]{1,1}[0-9]{7}[A-Z]{1}"
-                                required
-                                value={formValues.dni}
-                                onChange={handleInputChange}
-                                onBlur={handleBlur}
-                                className={formErrors.dni ? "input-error" : ""}
-                                onKeyDown={handleKeyDown}
-                                ref={inputRefs.dni}
-                            />
-                            {formErrors.dni && (
-                                <span className="input-error-message" style={{ fontSize: "10px" }}>
-                                    Formato DNI/NIE inválido. Debe seguir el patrón correcto.
-                                </span>
-                            )}
-
-                            <label>Email</label>
-                            <input
-                                type="email"
-                                name="email"
-                                value={formValues.email}
-                                onChange={handleInputChange}
-                                onBlur={handleBlur}
-                                className={formErrors.email ? "input-error" : ""}
-                                onKeyDown={handleKeyDown}
-                                ref={inputRefs.email}
-                            />
-                            {formErrors.email && (
-                                <span className="input-error-message" style={{ fontSize: "10px" }}>
-                                    Formato de email inválido.
-                                </span>
-                            )}
-
-                            <label>Teléfono</label>
-                            <input
-                                type="phone"
-                                name="phone"
-                                value={formValues.phone}
-                                onChange={handleInputChange}
-                                onBlur={handleBlur}
-                                className={formErrors.phone ? "input-error" : ""}
-                                onKeyDown={handleKeyDown}
-                                ref={inputRefs.phone}
-                            />
-                            {formErrors.phone && (
-                                <span className="input-error-message" style={{ fontSize: "10px" }}>
-                                    Formato de teléfono inválido.
-                                </span>
-                            )}
-
-                            <label>Contraseña</label>
-                            <input
-                                type="password"
-                                name="password"
-                                placeholder="********"
-                                value={formValues.password}
-                                onChange={handleInputChange}
-                                onBlur={handleBlur}
-                                className={formErrors.password ? "input-error" : ""}
-                                onKeyDown={handleKeyDown}
-                                ref={inputRefs.password}
-                            />
-                            <span style={{ fontSize: "10px", color: "#555" }}>
-                                8 caracteres, debe tener mayúsculas, números y un carácter especial.
-                            </span>
-
-                            <label>Confirmar Contraseña</label>
-                            <input
-                                type="password"
-                                name="confirmPassword"
-                                placeholder="********"
-                                value={formValues.confirmPassword}
-                                onChange={handleInputChange}
-                                onBlur={handleBlur}
-                                className={formErrors.confirmPassword ? "input-error" : ""}
-                                onKeyDown={handleKeyDown}
-                                ref={inputRefs.confirmPassword}
-                            />
-                            {formErrors.confirmPassword && (
-                                <span className="input-error-message" style={{ fontSize: "10px" }}>
-                                    Las contraseñas no coinciden.
-                                </span>
-                            )}
+                            {/* Genera inputs dinámicamente con validaciones */}
+                            {[
+                                "name",
+                                "dni",
+                                "email",
+                                "phone",
+                                "password",
+                                "confirmPassword",
+                            ].map((field) => (
+                                <div key={field} style={{ marginBottom: "24px" }}>
+                                    <label htmlFor={field}>
+                                        {field === "confirmPassword"
+                                            ? "Confirmar Contraseña"
+                                            : field.charAt(0).toUpperCase() + field.slice(1)}
+                                    </label>
+                                    <input
+                                        id={field}
+                                        type={field.includes("password") ? "password" : "text"}
+                                        name={field}
+                                        value={formValues[field]}
+                                        onChange={handleInputChange}
+                                        onKeyDown={handleKeyDown}
+                                        ref={inputRefs[field]}
+                                        className={formErrors[field] ? "input-error" : ""}
+                                    />
+                                    {formErrors[field] && (
+                                        <span className="input-error-message" style={{ fontSize: "10px" }}>
+                                            {field === "dni"
+                                                ? "Formato DNI/NIE inválido"
+                                                : field === "email"
+                                                    ? "Formato de email inválido"
+                                                    : field === "phone"
+                                                        ? "Formato de teléfono inválido"
+                                                        : field === "password"
+                                                            ? "Contraseña inválida"
+                                                            : "Las contraseñas no coinciden"}
+                                        </span>
+                                    )}
+                                    {field === "password" && (
+                                        <span style={{ fontSize: "10px", color: "#555" }}>
+                                            8 caracteres, mayúsculas, números y un carácter especial.
+                                        </span>
+                                    )}
+                                </div>
+                            ))}
 
                             <div className={styles.modal__separator}></div>
 
+                            {/* Botón para continuar al tab de mascotas */}
                             <button type="button" className="btn-filled" onClick={handleContinue}>
                                 Continuar
                             </button>
                         </form>
                     )}
 
+                    {/* Tab Mascotas */}
                     {activeTab === "pet" && (
                         <form>
                             <div className={styles.modal__separator}></div>
-                            {pets.map((pet, index) => (
-                                <div key={index}>
-                                    <label>Nombre</label>
-                                    <input type="text" />
 
-                                    <label htmlFor={`pet-${index}`}>Mascota</label>
-                                    <select id={`pet-${index}`}>
+                            {/* Lista de mascotas */}
+                            {pets.map((pet, index) => (
+                                <div key={index} style={{ marginBottom: "24px" }}>
+                                    <label htmlFor={`pet-name-${index}`}>Nombre</label>
+                                    <input
+                                        id={`pet-name-${index}`}
+                                        type="text"
+                                        value={pet.name}
+                                        onChange={(e) => handlePetChange(index, "name", e.target.value)}
+                                    />
+
+                                    <label htmlFor={`pet-species-${index}`}>Tipo de Mascota</label>
+                                    <select
+                                        id={`pet-species-${index}`}
+                                        value={pet.species}
+                                        onChange={(e) => handlePetChange(index, "species", e.target.value)}
+                                    >
+                                        <option value="">Seleccione</option>
                                         <option>Perro</option>
                                         <option>Gato</option>
                                         <option>Ave</option>
@@ -300,24 +255,48 @@ const Modal = ({ isOpen, onClose }) => {
                                         <option>Otro</option>
                                     </select>
 
-                                    <label>Raza o Especie</label>
-                                    <input type="text" />
+                                    <label htmlFor={`pet-breed-${index}`}>Raza o Especie</label>
+                                    <input
+                                        id={`pet-breed-${index}`}
+                                        type="text"
+                                        value={pet.breed}
+                                        onChange={(e) => handlePetChange(index, "breed", e.target.value)}
+                                    />
 
-                                    <label>Edad</label>
-                                    <input type="number" />
+                                    <label htmlFor={`pet-age-${index}`}>Edad</label>
+                                    <input
+                                        id={`pet-age-${index}`}
+                                        type="number"
+                                        value={pet.age}
+                                        onChange={(e) => handlePetChange(index, "age", e.target.value)}
+                                    />
 
+                                    {/* Selección de género horizontal */}
                                     <div className={styles["modal__radio-group"]}>
                                         <label>
-                                            <input type="radio" name={`gender-${index}`} /> Macho
+                                            <input
+                                                type="radio"
+                                                name={`gender-${index}`}
+                                                checked={pet.gender === "Macho"}
+                                                onChange={() => handlePetChange(index, "gender", "Macho")}
+                                            />{" "}
+                                            Macho
                                         </label>
                                         <label>
-                                            <input type="radio" name={`gender-${index}`} /> Hembra
+                                            <input
+                                                type="radio"
+                                                name={`gender-${index}`}
+                                                checked={pet.gender === "Hembra"}
+                                                onChange={() => handlePetChange(index, "gender", "Hembra")}
+                                            />{" "}
+                                            Hembra
                                         </label>
                                     </div>
+                                    <div className={styles.modal__separator}></div>
                                 </div>
                             ))}
 
-                            <div className={styles.modal__separator}></div>
+                            {/* Botones al final del tab de mascotas */}
                             <div className={styles["modal__buttons"]}>
                                 <button type="button" className="btn-outline" onClick={addPet}>
                                     + Mascota
@@ -334,4 +313,4 @@ const Modal = ({ isOpen, onClose }) => {
     );
 };
 
-export default Modal;
+export default ModalComponent;
