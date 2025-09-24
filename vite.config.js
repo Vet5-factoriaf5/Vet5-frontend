@@ -34,5 +34,19 @@ export default defineConfig({
     // This is where we configure things like "global test setups" or "custom matchers".
     // Here, it is use to import the "@testing-library/jest-dom" matchers.
     setupFiles: "./src/setupTests.js",
+
+    // The "coverage" option is for configuring code coverage reports.
+    coverage: {
+        // The "provider" specifies which coverage engine to use, "v8" is the default.
+        provider: 'v8',
+
+        // "reporter" is an array of report formats to generate.
+        // "text" outputs a summary to the console.
+        // "html" generates a full, browsable HTML report.
+        reporter: ['text', 'html'],
+
+        // "reportsDirectory" specifies the folder where the reports will be saved.
+        reportsDirectory: './coverage',
+    },
   },
 });
