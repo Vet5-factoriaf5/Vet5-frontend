@@ -1,4 +1,6 @@
-/* 
+@import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
+
+/*
   Variables raíz para colores y tipografía
   Definir variables CSS globales para un tema consistente y uso de fuentes en toda la aplicación
 */
@@ -6,6 +8,7 @@
   --color-darkest: #073a45;
   --color-primary: #1a8b8e;
   --color-secondary: #b0e3b2;
+  --color-accent: #bf4a18;
   --color-text: #282828;
   --color-medium-grey: #d0d0d0;
   --color-alert: #e21024;
@@ -13,10 +16,10 @@
   --color-background: #ffffff;
 
   /* Tipografía global */
-  --font-family-base: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  --font-family-base: 'Montserrat', system-ui, Avenir, Helvetica, Arial, sans-serif;
 }
 
-/* 
+/*
   Reseteo básico de CSS
   Eliminar margen y relleno por defecto, establecer box-sizing en border-box para un control más fácil del diseño
 */
@@ -26,7 +29,7 @@
   box-sizing: border-box;
 }
 
-/* 
+/*
   Estilos base para html y body
   Asegurar altura completa y aplicar fuente global y colores de fondo para la aplicación
 */
@@ -45,6 +48,10 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+line {
+  line-height: 1px;
+  color: var(--color-secondary);
+}
 /* ========================
   Estilos de tipografía para encabezados y párrafos
   Fuente consistente, color, margen y altura de línea para elementos de texto
@@ -97,10 +104,115 @@ p {
 }
 
 /* ========================
+  Modal
+  ======================== */
+/* CSS adicional para modal y tabs (agrega a index.css o un archivo separado) */
+/* Modal base: Overlay fijo, centrado con Flexbox */
+.modal {
+  display: flex;
+  /* Para centrar contenido */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid var(--color-secondary);
+  /* Semi-transparente */
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  /* Sobre otros elementos */
+}
+
+/* Contenido del modal: Usa tu .form-background */
+.modal-content {
+  position: relative;
+  max-width: 500px;
+  width: 70%;
+  padding: 4rem;
+  border-radius: 10px;
+  -webkit-box-shadow: 5px 1px 18px -5px rgba(0,0,0,0.2); 
+  box-shadow: 5px 1px 18px -5px rgba(0,0,0,0.2);
+
+  /* Glassmorphic effect */
+  background: rgba(255, 255, 255, 0.45); /* semi-transparent white */
+  backdrop-filter: blur(10px); /* glassmorphic blur */
+  border: 1px solid var(--color-light-grey); 
+}
+
+
+/* Tabs: Horizontal con Flexbox, responsive */
+.tabs {
+  display: flex;
+  margin-bottom: 1rem;
+  gap: 24px;
+  /* Espacio entre tabs */
+}
+
+.tab-link {
+  position: relative;
+  font: 1em sans-serif;
+  flex: 1;
+  padding: 0.5rem;
+  background: transparent;
+  border: none;
+  border-bottom: 3px solid transparent;
+  cursor: pointer;
+  font-weight: 500;
+  color: var(--color-text);
+  font-size: 1.1rem;
+}
+
+.tab-link::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%; /* underline spans full width */
+  height: 3px;
+  background: transparent;
+  transition: background 0.3s ease;
+}
+
+.tab-link--active::after {
+  background: var(--color-primary);
+}
+
+/* Contenido de tabs: Oculto por default */
+.tab-content {
+  display: none;
+}
+
+.tab-content.active {
+  display: block;
+  /* Muestra activo */
+}
+
+/* Cierre: Posicionado absoluto */
+.close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: var(--color-text);
+}
+
+/* Media query adicional si necesitas (integra con las tuyas) */
+@media (max-width: 480px) {
+  .tabs {
+    flex-direction: column;
+    /* Tabs verticales en móvil */
+  }
+}
+
+
+/* ========================
 Estilo globales botónes
    ======================== */
 
-/* 
+/*
   Botón con fondo completo
   Fondo con color primario, texto blanco, borde redondeado y efecto hover con opacidad al 70%
 */
@@ -108,11 +220,13 @@ Estilo globales botónes
   background-color: var(--color-primary);
   color: white;
   border-radius: 7px;
-  min-width: 150px; /* ancho mínimo */
-  min-height: 44px;
+  min-width: 120px;
+  /* ancho mínimo */
+  min-height: 38px;
   border: none;
   cursor: pointer;
   transition: opacity 0.3s ease;
+  font-weight: 700;
 }
 
 .btn-filled:hover {
@@ -127,11 +241,13 @@ Estilo globales botónes
   background-color: transparent;
   color: var(--color-primary);
   border: 1px solid var(--color-primary);
-  min-width: 150px; /* ancho mínimo */
-  min-height: 44px;
+  min-width: 120px;
+  /* ancho mínimo */
+  min-height: 38px;
   border-radius: 7px;
   cursor: pointer;
   transition: background-color 0.3s ease, color 0.3s ease;
+  font-weight: 700;
 }
 
 .btn-outline:hover {
@@ -221,14 +337,15 @@ input[type="radio"]:checked::after {
 label {
   font-family: var(--font-family-base);
   color: var(--color-text);
-  font-size: 1rem;
+  font-size: 0,8rem;
+  cursor: pointer;
   padding: 0.2em 0.4em;
   display: inline-block;
   margin-bottom: 0.2em;
   font-weight: 500;
 }
 
-/* 
+/*
   Clase para labels que necesiten mostrar alerta o error
   Texto rojo, fondo transparente y borde outline rojo
   Mantiene padding y fuente consistente con los labels normales
@@ -239,7 +356,7 @@ label {
   outline: 1px solid var(--color-alert);
   padding: 0.2em 0.4em;
   font-family: var(--font-family-base);
-  font-size: 1rem;
+  font-size: 0,8rem;
   font-weight: 500;
   border-radius: 4px;
 }
@@ -251,6 +368,8 @@ label {
 input[type="text"],
 input[type="email"],
 input[type="password"],
+input[type="number"],
+input[type="phone"],
 select,
 textarea {
   font-family: var(--font-family-base);
@@ -268,6 +387,8 @@ textarea {
 input[type="text"]:focus,
 input[type="email"]:focus,
 input[type="password"]:focus,
+input[type="number"]:focus,
+input[type="phone"]:focus,
 select:focus,
 textarea:focus {
   outline: none;
@@ -278,6 +399,8 @@ textarea:focus {
 input[type="text"]:disabled,
 input[type="email"]:disabled,
 input[type="password"]:disabled,
+input[type="number"]:disabled,
+input[type="phone"]:disabled,
 select:disabled,
 textarea:disabled {
   background-color: var(--color-light-grey);
@@ -292,7 +415,8 @@ textarea:disabled {
   color: var(--color-alert) !important;
 }
 
-.input-success { /* al seleccionar la etiqueta cambia de color */
+.input-success {
+  /* al seleccionar la etiqueta cambia de color */
   border-color: #2a7a2a !important;
   /* Verde oscuro */
   color: var(--color-darkest) !important;
@@ -326,9 +450,9 @@ textarea:disabled {
 }
 
 /* ========================
-   Media Query: Tablets
-   ========================
-   Para pantallas de hasta 768px de ancho
+  Media Query: Tablets
+  ========================
+  Para pantallas de hasta 768px de ancho
 */
 @media (max-width: 768px) {
   h1 {
@@ -376,9 +500,9 @@ textarea:disabled {
 }
 
 /* ========================
-   Media Query: Móviles
-   ========================
-   Para pantallas de hasta 480px de ancho
+  Media Query: Móviles
+  ========================
+  Para pantallas de hasta 480px de ancho
 */
 @media (max-width: 480px) {
   h1 {
@@ -427,38 +551,30 @@ textarea:disabled {
     margin-bottom: 0.5em;
   }
 
-/*---------
+  /*---------
 Pruebas
 -----------*/
 
-.navbar {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start; /* logo a la izquierda */
-  padding: 1rem;
-  border-color: var(--color-primary);
-  background-color: var(--color-primary); /* gris suave */
-  border-bottom: 1px solid #ddd;
-}
-
-.navbar-logo {
-  height: 40px;
-}
-
-/* En móvil, centramos el logo */
-@media (max-width: 768px) {
   .navbar {
-    justify-content: center;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    /* logo a la izquierda */
+    padding: 1rem;
+    border-color: var(--color-primary);
+    background-color: var(--color-primary);
+    /* gris suave */
+    border-bottom: 1px solid #ddd;
   }
-}
 
+  .navbar-logo {
+    height: 40px;
+  }
 
-
-
-
-
-
-
-
-
+  /* En móvil, centramos el logo */
+  @media (max-width: 768px) {
+    .navbar {
+      justify-content: center;
+    }
+  }
 }
