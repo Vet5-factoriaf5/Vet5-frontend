@@ -37,14 +37,11 @@
     margin: 0 auto;
     scroll-behavior: smooth;
     padding: 1rem 1rem 2rem 1rem;
-    background: #ffffff;
+    background: rgba(255, 255, 255, 0.85); /* semi-transparent white */
+    backdrop-filter: blur(10px); /* glassmorphic blur */
     border: 1px solid var(--color-primary);
     width: 100%;
     box-sizing: border-box;
-
-    /* Glassmorphic effect */
-  background: rgba(255, 255, 255, 0.85); /* semi-transparent white */
-  backdrop-filter: blur(10px); /* glassmorphic blur */
 }
 
 .modal__close {
@@ -231,7 +228,7 @@
   ======================== */
 
 .pet-block {
-    border-bottom: 1px solid var(--color-medium-grey);
+    border-bottom: 1px solid ;
     padding-bottom: 16px;
     margin-bottom: 16px;
     width: 100%;
@@ -285,4 +282,33 @@
     max-width: 200px;
     padding: 10px 20px;
     box-sizing: border-box;
+}
+
+/* ========================
+    Success Message
+  ======================== */
+
+@keyframes fadeInOut {
+    0% { opacity: 0; transform: translateY(-10px); }
+    10% { opacity: 1; transform: translateY(0); }
+    90% { opacity: 1; transform: translateY(0); }
+    100% { opacity: 0; transform: translateY(-10px); }
+}
+
+.modal__success-message {
+    background: rgba(235, 252, 252, 0.85); /* semi-transparent white */
+    backdrop-filter: blur(10px); /* glassmorphic blur */
+    border: 1px solid var(--color-primary);
+    border-radius: 10px;
+    padding: 1.5rem 2rem;
+    text-align: center;
+    color: var(--color-darkest);
+    font-weight: 600;
+    font-size: 1rem;
+    width: 90%;
+    max-width: 400px;
+    margin: 0 auto 16px auto;
+    box-shadow: 5px 1px 18px -5px rgba(0, 0, 0, 0.9);
+    animation: fadeInOut 3s ease forwards;
+    position: relative;
 }
