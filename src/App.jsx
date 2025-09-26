@@ -1,9 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
+import "./index.css"; // globales de dev
+
+import ModalComponent from "./components/modal/Modal.jsx";
 
 function App() {
+  const [modalOpen, setModalOpen] = useState(false);
+
   return (
-    <div>
-      <h1>Hello, World!</h1>
+    <div className="App">
+      <button onClick={() => setModalOpen(true)}>Abrir Modal</button>
+
+      <ModalComponent isOpen={modalOpen} onClose={() => setModalOpen(false)} />
     </div>
   );
 }

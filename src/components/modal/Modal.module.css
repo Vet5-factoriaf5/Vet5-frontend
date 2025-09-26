@@ -1,0 +1,314 @@
+.modal {
+    display: flex;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-color: transparent;
+}
+
+/* ========================
+    Glass Effect and Content
+  ======================== */
+
+/* .modal__glass {
+    background: #f5f5f5;
+    padding: 2rem;
+    border-radius: 10px;
+    width: 33%;
+    min-width: 400px;
+    max-width: 600px;
+    box-sizing: border-box;
+    z-index: 1001;
+    transition: all 0.3s ease-in-out;
+} */
+
+.modal__content {
+    position: relative;
+    border-radius: 10px;
+    box-shadow: 5px 1px 18px -5px rgba(0, 0, 0, 0.9);
+    margin: 0 auto;
+    scroll-behavior: smooth;
+    padding: 1rem 1rem 2rem 1rem;
+    background: rgba(255, 255, 255, 0.85); /* semi-transparent white */
+    backdrop-filter: blur(10px); /* glassmorphic blur */
+    border: 1px solid var(--color-primary);
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.modal__close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 1.2rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+/* ========================
+    Tabs
+  ======================== */
+
+.modal__tabs {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 1rem;
+    width: 100%;
+}
+
+.modal__tab-link {
+    position: relative;
+    flex: 1;
+    padding: 0.75rem 1rem;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--color-text);
+    border-bottom: 2px solid transparent;
+    transition: color 0.3s ease, border-bottom-color 0.3s ease, background-color 0.3s ease;
+    border-radius: 4px 4px 0 0;
+    height: 48px;
+    text-align: center;
+    min-width: 0;
+}
+
+.modal__tab-link::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: transparent;
+    transition: background 0.3s ease;
+}
+
+.modal__tab-link--active::after {
+    background: var(--color-primary);
+}
+
+.modal__tab-content {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.modal__tab-content label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+/* ========================
+    Form and Buttons
+  ======================== */
+
+.modal__buttons {
+    font-family: var(--font-family-base);
+    display: flex;
+    gap: 48px;
+    margin-top: 24px !important;
+    flex-wrap: nowrap;
+    width: 100%;
+    justify-content: center;
+}
+
+/* ========================
+    Media Queries
+  ======================== */
+
+@media (min-width: 1200px) {
+    .modal__glass {
+        width: 33%;
+        min-width: 450px;
+    }
+}
+
+@media (max-width: 1024px) and (min-width: 769px) {
+    .modal__glass {
+        width: 60%;
+        min-width: 380px;
+    }
+}
+
+@media (max-width: 768px) and (min-width: 601px) {
+    .modal__glass {
+        width: 90%;
+        min-width: 350px;
+        padding: 1.5rem;
+    }
+}
+
+@media (max-width: 600px) {
+    .modal__glass {
+        width: 85%;
+        max-width: 95%;
+        padding: 1rem;
+    }
+    
+    .modal__buttons {
+        flex-wrap: wrap;
+        gap: 16px;
+    }
+    
+    .modal__tab-link {
+        flex: 1;
+        min-width: 120px;
+        font-size: 0.9rem;
+        padding: 0.5rem 0.75rem;
+    }
+}
+
+/* ========================
+    Separators
+  ======================== */
+
+.modal__separator {
+    height: 1px;
+    background-color: var(--color-secondary);
+    margin: 16px 0;
+    width: 100%;
+}
+
+/* ========================
+    Radio Groups
+  ======================== */
+
+.modal__radio-group {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    width: 100%;
+}
+
+.modal__radio-group > div {
+    margin-bottom: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1 1 40%;
+    max-width: 150px;
+}
+
+.modal__radio-group label {
+    white-space: nowrap;
+    max-width: 50%;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.modal__radio-group input[type="radio"] {
+    margin-bottom: 0;
+    width: 16px;
+    height: 16px;
+    margin-right: 4px;
+}
+
+@media (max-width: 600px) {
+    .modal__radio-group {
+        flex-direction: column;
+        gap: 8px;
+    }
+    .modal__radio-group label {
+        max-width: 100%;
+    }
+}
+
+/* ========================
+    Pet Blocks
+  ======================== */
+
+.pet-block {
+    border-bottom: 1px solid ;
+    padding-bottom: 16px;
+    margin-bottom: 16px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.pet-block label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.pet-block > div {
+    margin-bottom: 16px;
+}
+
+.pet-block + .pet-block {
+    margin-top: 16px;
+}
+
+/* ========================
+    Form Fields
+  ======================== */
+
+.modal__content input,
+.modal__content select,
+.modal__content textarea,
+.modal__content form {
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+.modal__content input[type="text"],
+.modal__content input[type="email"],
+.modal__content input[type="tel"],
+.modal__content input[type="password"],
+.modal__content input[type="number"],
+.modal__content select,
+.modal__content textarea {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid var(--color-medium-grey);
+    border-radius: 4px;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+.modal__content button {
+    max-width: 200px;
+    padding: 10px 20px;
+    box-sizing: border-box;
+}
+
+/* ========================
+    Success Message
+  ======================== */
+
+@keyframes fadeInOut {
+    0% { opacity: 0; transform: translateY(-10px); }
+    10% { opacity: 1; transform: translateY(0); }
+    90% { opacity: 1; transform: translateY(0); }
+    100% { opacity: 0; transform: translateY(-10px); }
+}
+
+.modal__success-message {
+    background: rgba(235, 252, 252, 0.85); /* semi-transparent white */
+    backdrop-filter: blur(10px); /* glassmorphic blur */
+    border: 1px solid var(--color-primary);
+    border-radius: 10px;
+    padding: 1.5rem 2rem;
+    text-align: center;
+    color: var(--color-darkest);
+    font-weight: 600;
+    font-size: 1rem;
+    width: 90%;
+    max-width: 400px;
+    margin: 0 auto 16px auto;
+    box-shadow: 5px 1px 18px -5px rgba(0, 0, 0, 0.9);
+    animation: fadeInOut 3s ease forwards;
+    position: relative;
+}
