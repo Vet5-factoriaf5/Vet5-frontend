@@ -1,0 +1,165 @@
+/* .modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modalContent {
+    background: rgba(255, 255, 255, 0.85);
+    border: 1px solid var(--color-light-grey);
+    border-radius: 12px;
+    padding: 30px;
+    max-width: 400px;
+    width: 100%;
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.closeBtn {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    float: right;
+}
+
+.loginForm {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.loginForm input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--color-light-grey);
+    border-radius: 8px;
+}
+
+.loginBtn {
+    padding: 12px;
+    background: var(--color-primary);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.3s ease;
+}
+
+.loginBtn:hover {
+    background: var(--color-primary-dark);
+}
+
+.forgotPassword {
+    margin-top: 15px;
+    text-align: center;
+}
+
+.forgotPassword a {
+    color: var(--color-primary);
+    text-decoration: none;
+    font-size: 0.9rem;
+}
+
+.forgotPassword a:hover {
+    text-decoration: underline;
+}  */
+
+
+
+
+/* src/components/LoginModal.css */
+/* src/components/LoginModal.css */
+.login-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.login-modal {
+    background: rgba(255, 255, 255, 0.65);
+    backdrop-filter: blur(10px);
+    border: 2px solid var();
+    padding: 30px;
+    border-radius: 8px;
+    width: 300px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+h2 {
+    font-size: 30px;
+    font-weight: 900;
+    margin-bottom: 30px;
+}
+
+.login-modal {
+    line-height: 1px;
+    color: var(--color-secondary);
+}
+
+.login-modal input {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+} 
+
+.login-modal button {
+    width: 100%;
+    padding: 10px;
+    background-color: var(--color-primary);
+    color: white;
+    border: none;
+    border-radius: 7px;
+    min-width: 120px;
+    min-height: 38px;
+    transition: opacity 0.3s ease;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 40px;
+
+}
+
+.login-modal button[type="submit"]:hover {
+    background-color: var(--color-darkest);
+}
+
+
+.login-modal .close-btn {
+    background: transparent;
+    color: var(--color-primary);
+    border: none;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.btn-filled {
+    background-color: var(--color-primary);
+    color: white;
+    border-radius: 7px;
+    min-width: 120px;
+    /* ancho mínimo */
+    min-height: 38px;
+    border: none;
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+    font-weight: 700;
+}
