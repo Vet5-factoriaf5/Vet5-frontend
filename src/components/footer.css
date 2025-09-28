@@ -5,6 +5,8 @@
     justify-content: center;
     align-items: center;
     background-color: var(--color-darkest);
+    background: rgba(10, 44, 53, );
+    backdrop-filter: blur(10px);
     position: absolute;
     bottom: 0;
     left: 0;
