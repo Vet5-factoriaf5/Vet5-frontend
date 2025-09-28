@@ -1,16 +1,36 @@
-import React, { useState } from "react";
-import "./index.css"; // globales de dev
-
-import ModalComponent from "./components/modal/Modal.jsx";
+/* import { useState } from "react";
+import Nav from "./components/Nav";
+import Home from "./pages/Home";
+import Footer from "./components/Footer";
 
 function App() {
-  const [modalOpen, setModalOpen] = useState(false);
+  return (
+    <>
+      <Nav />
+      <Home />
+      <Footer />
+    </>
+  );
+}
+
+export default App; */
+
+import React, { useState } from 'react';
+import Nav from './components/Nav';
+import Footer from './components/Footer';
+import Home from "./pages/Home";
+import LoginModal from './components/LoginModal';
+import './App.css';
+
+function App() {
+  const [isLoginOpen, setIsLoginOpen] = useState(false);
 
   return (
     <div className="App">
-      <button onClick={() => setModalOpen(true)}>Abrir Modal</button>
-
-      <ModalComponent isOpen={modalOpen} onClose={() => setModalOpen(false)} />
+      <Home />
+      <Nav onLoginClick={() => setIsLoginOpen(true)} />
+      <LoginModal isOpen={isLoginOpen} onClose={() => setIsLoginOpen(false)} />
+      <Footer />
     </div>
   );
 }
