@@ -4,7 +4,7 @@ import React from "react";
 import "./Home.css";
 import bannerImage from "../../assets/images/banner-ok.webp";
 
-function Home() {
+function Home({ onRegisterClick }) {
     return (
         <div
             className="home"
@@ -38,6 +38,7 @@ function Home() {
                     <h3>¡Únete a nuestra familia!.</h3>
                     <button
                         className="btn-registrate"
+                        onClick={onRegisterClick} // Abre el modal de registro
                     >
                         Regístrate
                     </button>

@@ -11,7 +11,7 @@ import "../../index.css";
 // - Navegación: Al completar usuario y pulsar "Continuar", se valida y pasa al tab de mascotas.
 // - Registro: Al menos una mascota debe tener nombre y tipo para permitir el registro.
 
-const ModalComponent = ({ isOpen, onClose }) => {
+const ModalComponent = ({ isOpen, onClose, onRegister }) => {
     // Estado para los valores del formulario de usuario
     const [formValues, setFormValues] = useState({
         name: "",
@@ -140,6 +140,9 @@ const ModalComponent = ({ isOpen, onClose }) => {
         const hasValidPet = pets.some((pet) => pet.name.trim() && pet.species);
         if (hasValidPet) {
             setSuccessMessage("¡Usuario y mascotas registradas con éxito!");
+            if (onRegister) {
+                onRegister(formValues);
+            }
             setTimeout(() => {
                 setSuccessMessage("");
                 setFormValues({
@@ -211,18 +214,18 @@ const ModalComponent = ({ isOpen, onClose }) => {
                         {/* Formulario de registro de usuario */}
                         <form
                             style={{ display: activeTab === "register" ? "block" : "none" }}
-                            autoComplete="off"
+                            autoComplete="on"
                         >
                             <div className={styles.modal__separator}></div>
                             {/* Campos del formulario de usuario */}
                             {[
-                                { field: "name", label: "Nombre" },
-                                { field: "dni", label: "DNI | NIE" },
-                                { field: "email", label: "Email" },
-                                { field: "phone", label: "Teléfono" },
-                                { field: "password", label: "Contraseña" },
-                                { field: "confirmPassword", label: "Confirmar Contraseña" },
-                            ].map(({ field, label }) => (
+                                { field: "name", label: "Nombre", autoComplete: "name" },
+                                { field: "dni", label: "DNI | NIE", autoComplete: "off" },
+                                { field: "email", label: "Email", autoComplete: "email" },
+                                { field: "phone", label: "Teléfono", autoComplete: "tel" },
+                                { field: "password", label: "Contraseña", autoComplete: "new-password" },
+                                { field: "confirmPassword", label: "Confirmar Contraseña", autoComplete: "new-password" },
+                            ].map(({ field, label, autoComplete }) => (
                                 <div key={field} style={{ marginBottom: "16px" }}>
                                     <label htmlFor={field}>{label}</label>
                                     <input
@@ -241,6 +244,7 @@ const ModalComponent = ({ isOpen, onClose }) => {
                                         ref={inputRefs[field]}
                                         className={formErrors[field] ? "input-error" : ""}
                                         data-testid={`input-${field}`}
+                                        autoComplete={autoComplete}
                                     />
                                     {/* Muestra errores de validación por campo */}
                                     {formErrors[field] && (
@@ -300,6 +304,7 @@ const ModalComponent = ({ isOpen, onClose }) => {
                                             value={pet.name}
                                             onChange={(e) => handlePetChange(index, "name", e.target.value)}
                                             data-testid={`input-pet-name-${index}`}
+                                            autoComplete="off"
                                         />
                                     </div>
                                     {/* Tipo de mascota */}
@@ -310,6 +315,7 @@ const ModalComponent = ({ isOpen, onClose }) => {
                                             value={pet.species}
                                             onChange={(e) => handlePetChange(index, "species", e.target.value)}
                                             data-testid={`input-pet-species-${index}`}
+                                            autoComplete="off"
                                         >
                                             <option value="">Seleccione</option>
                                             <option>Perro</option>
@@ -331,6 +337,7 @@ const ModalComponent = ({ isOpen, onClose }) => {
                                             value={pet.breed}
                                             onChange={(e) => handlePetChange(index, "breed", e.target.value)}
                                             data-testid={`input-pet-breed-${index}`}
+                                            autoComplete="off"
                                         />
                                     </div>
                                     {/* Edad */}
@@ -342,6 +349,7 @@ const ModalComponent = ({ isOpen, onClose }) => {
                                             value={pet.age}
                                             onChange={(e) => handlePetChange(index, "age", e.target.value)}
                                             data-testid={`input-pet-age-${index}`}
+                                            autoComplete="off"
                                         />
                                     </div>
                                     {/* Selección de género (radio) */}
@@ -354,6 +362,7 @@ const ModalComponent = ({ isOpen, onClose }) => {
                                                 checked={pet.gender === "Macho"}
                                                 onChange={() => handlePetChange(index, "gender", "Macho")}
                                                 data-testid={`input-pet-gender-macho-${index}`}
+                                                autoComplete="off"
                                             />
                                             <label htmlFor={`gender-macho-${index}`}>Macho</label>
                                         </div>
@@ -365,6 +374,7 @@ const ModalComponent = ({ isOpen, onClose }) => {
                                                 checked={pet.gender === "Hembra"}
                                                 onChange={() => handlePetChange(index, "gender", "Hembra")}
                                                 data-testid={`input-pet-gender-hembra-${index}`}
+                                                autoComplete="off"
                                             />
                                             <label htmlFor={`gender-hembra-${index}`}>Hembra</label>
                                         </div>

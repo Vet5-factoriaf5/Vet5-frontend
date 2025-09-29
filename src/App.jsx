@@ -11,7 +11,15 @@ function App() {
   const [isLoginOpen, setIsLoginOpen] = useState(false);
 
   // Estado que contiene todos los usuarios registrados
-  const [users, setUsers] = useState([]);
+  const [users, setUsers] = useState([
+    {
+      name: "Juan González",
+      dni: "12345678A",
+      email: "juan@gmai.com",
+      phone: "627123456",
+      password: "?Jg12345"
+    }
+  ]);
 
   return (
     <>
@@ -31,6 +39,7 @@ function App() {
         isOpen={isLoginOpen}
         onClose={() => setIsLoginOpen(false)}
         users={users} // Pasamos los usuarios registrados
+        onRegister={(newUser) => setUsers((prev) => [...prev, newUser])} // Permite agregar un nuevo usuario desde el login
       />
     </>
   );

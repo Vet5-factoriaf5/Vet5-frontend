@@ -1,26 +1,37 @@
-// src/components/LoginModal.jsx
 import React, { useState } from 'react';
 import './LoginModal.css';
 
 export default function LoginModal({ isOpen, onClose, registeredUsers }) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [error, setError] = useState('');
+    const [message, setMessage] = useState('');
 
     if (!isOpen) return null;
 
     const handleSubmit = (e) => {
         e.preventDefault();
+
+        if (!email || !password) {
+            setMessage('Por favor completa todos los campos');
+            setTimeout(() => setMessage(''), 3000);
+            return;
+        }
+
         const user = registeredUsers.find(
             (user) => user.email === email && user.password === password
         );
+
         if (user) {
-            setError('');
+            setMessage('¡Usuario registrado correctamente!');
             setEmail('');
             setPassword('');
-            onClose();
+            setTimeout(() => {
+                setMessage('');
+                onClose();
+            }, 1500);
         } else {
-            setError('Correo electrónico o contraseña incorrectos');
+            setMessage('Correo electrónico o contraseña incorrectos');
+            setTimeout(() => setMessage(''), 3000);
         }
     };
 
@@ -36,6 +47,7 @@ export default function LoginModal({ isOpen, onClose, registeredUsers }) {
                             id="email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
+                            autoComplete="email"
                         />
                     </div>
                     <div className="form-group">
@@ -45,12 +57,23 @@ export default function LoginModal({ isOpen, onClose, registeredUsers }) {
                             id="password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
+                            autoComplete="current-password"
                         />
                     </div>
-                    {error && <p className="error-message">{error}</p>}
+                    {message && (
+                        <p
+                            className={
+                                message.includes('incorrectos') || message.includes('completa')
+                                    ? 'error-message'
+                                    : 'success-message'
+                            }
+                        >
+                            {message}
+                        </p>
+                    )}
                     <button type="submit">Entrar</button>
+                    <button type="button" className="outline-btn" onClick={onClose}>Cerrar</button>
                 </form>
-                <button className="close-btn" onClick={onClose}>Cerrar</button>
             </div>
         </div>
     );
