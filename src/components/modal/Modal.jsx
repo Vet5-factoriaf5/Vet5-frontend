@@ -24,6 +24,7 @@ const ModalComponent = ({ isOpen, onClose, onRegister }) => {
     ]);
     const [activeTab, setActiveTab] = useState("register");
     const [successMessage, setSuccessMessage] = useState("");
+    const [errorMessage, setErrorMessage] = useState("");
 
     const inputRefs = {
         name: useRef(null),
@@ -124,7 +125,6 @@ const ModalComponent = ({ isOpen, onClose, onRegister }) => {
                 pets
             });
             setTimeout(() => {
-                console.log("Ejecutando cierre del modal");
                 setSuccessMessage("");
                 setFormValues({
                     name: "",
@@ -136,13 +136,12 @@ const ModalComponent = ({ isOpen, onClose, onRegister }) => {
                 });
                 setPets([{ name: "", species: "", breed: "", age: "", gender: "" }]);
                 setActiveTab("register");
-                console.log("Llamando a onClose");
                 onClose();
             }, 3000);
         } else {
-            setSuccessMessage("Por favor, completa al menos el nombre y tipo de una mascota");
+            setErrorMessage("Por favor, completa al menos el nombre y tipo de una mascota");
             setTimeout(() => {
-                setSuccessMessage("");
+                setErrorMessage("");
             }, 3000);
         }
     };
@@ -160,6 +159,7 @@ const ModalComponent = ({ isOpen, onClose, onRegister }) => {
                         onClose();
                     }}
                     type="button"
+                    aria-label="Cerrar"
                 >
                     ✕
                 </button>
@@ -188,8 +188,13 @@ const ModalComponent = ({ isOpen, onClose, onRegister }) => {
                     </button>
                 </div>
                 {successMessage && (
-                    <div className={styles["modal__success-message"]}>
+                    <div className={styles["modal__success-message"]} data-testid="success-message">
                         {successMessage}
+                    </div>
+                )}
+                {errorMessage && (
+                    <div className={styles["modal__error-message"]} data-testid="error-message">
+                        {errorMessage}
                     </div>
                 )}
                 <div className={styles["modal__tab-content"]}>
@@ -198,13 +203,13 @@ const ModalComponent = ({ isOpen, onClose, onRegister }) => {
                         autoComplete="off"
                     >
                         {[
-                            { field: "name", label: "Nombre", placeholder: "Nombre completo" },
-                            { field: "dni", label: "DNI", placeholder: "DNI o NIE" },
-                            { field: "email", label: "Correo Electrónico", placeholder: "Correo electrónico" },
-                            { field: "phone", label: "Teléfono", placeholder: "Teléfono" },
-                            { field: "password", label: "Contraseña", placeholder: "Contraseña" },
-                            { field: "confirmPassword", label: "Confirmar Contraseña", placeholder: "Confirmar contraseña" },
-                        ].map(({ field, label, placeholder }) => (
+                            { field: "name", label: "Nombre", placeholder: "Nombre completo", autoComplete: "name" },
+                            { field: "dni", label: "DNI", placeholder: "DNI o NIE", autoComplete: "off" },
+                            { field: "email", label: "Correo Electrónico", placeholder: "Correo electrónico", autoComplete: "email" },
+                            { field: "phone", label: "Teléfono", placeholder: "Teléfono", autoComplete: "tel" },
+                            { field: "password", label: "Contraseña", placeholder: "Contraseña", autoComplete: "new-password" },
+                            { field: "confirmPassword", label: "Confirmar Contraseña", placeholder: "Confirmar contraseña", autoComplete: "new-password" },
+                        ].map(({ field, label, placeholder, autoComplete }) => (
                             <div key={field} style={{ marginBottom: "16px" }}>
                                 <label htmlFor={field}>{label}</label>
                                 <input
@@ -223,7 +228,8 @@ const ModalComponent = ({ isOpen, onClose, onRegister }) => {
                                     ref={inputRefs[field]}
                                     className={formErrors[field] ? "input-error" : ""}
                                     placeholder={placeholder}
-                                    autoComplete="off"
+                                    autoComplete={autoComplete}
+                                    data-testid={`input-${field}`}
                                 />
                                 {formErrors[field] && (
                                     <span

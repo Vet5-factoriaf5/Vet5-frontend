@@ -1,80 +1,100 @@
-import React, { useState } from 'react';
-import './LoginModal.css';
+import React, { useState } from "react";
+import "./LoginModal.css";
+import "../../index.css";
 
-export default function LoginModal({ isOpen, onClose, registeredUsers }) {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [message, setMessage] = useState('');
+const LoginModal = ({ isOpen, onClose, users }) => {
+    const [formValues, setFormValues] = useState({
+        identifier: "",
+        password: "",
+    });
+    const [errorMessage, setErrorMessage] = useState("");
+    const [successMessage, setSuccessMessage] = useState("");
 
     if (!isOpen) return null;
 
-    const handleSubmit = (e) => {
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setFormValues((prev) => ({ ...prev, [name]: value }));
+        setErrorMessage("");
+        setSuccessMessage("");
+    };
+
+    const handleLogin = (e) => {
         e.preventDefault();
-
-        if (!email || !password) {
-            setMessage('Por favor completa todos los campos');
-            setTimeout(() => setMessage(''), 3000);
-            return;
-        }
-
-        const user = registeredUsers.find(
-            (user) => user.email === email && user.password === password
+        console.log("Usuarios disponibles:", users);
+        console.log("Datos de login:", formValues);
+        const user = users.find(
+            (u) =>
+                (u.email === formValues.identifier || u.dni === formValues.identifier) &&
+                u.password === formValues.password
         );
-
         if (user) {
-            setMessage('¡Usuario registrado correctamente!');
-            setEmail('');
-            setPassword('');
+            setSuccessMessage("¡Inicio de sesión exitoso!");
+            setErrorMessage("");
             setTimeout(() => {
-                setMessage('');
+                setFormValues({ identifier: "", password: "" });
+                setSuccessMessage("");
                 onClose();
-            }, 1500);
+            }, 3000);
         } else {
-            setMessage('Correo electrónico o contraseña incorrectos');
-            setTimeout(() => setMessage(''), 3000);
+            setErrorMessage("Usuario o contraseña incorrectos");
+            setSuccessMessage("");
         }
     };
 
     return (
-        <div className="login-modal-overlay" onClick={onClose}>
-            <div className="login-modal" onClick={(e) => e.stopPropagation()}>
-                <h2>Iniciar sesión</h2>
-                <form onSubmit={handleSubmit}>
-                    <div className="form-group">
-                        <label htmlFor="email">Email</label>
+        <div className="modal">
+            <div className="modal__content modal__glass">
+                <button
+                    className="modal__close"
+                    onClick={onClose}
+                    type="button"
+                >
+                    ✕
+                </button>
+                <h2>Iniciar Sesión</h2>
+                <div className="modal__separator"></div>
+                {successMessage && (
+                    <div className="modal__success-message">
+                        {successMessage}
+                    </div>
+                )}
+                {errorMessage && (
+                    <div className="modal__error-message">
+                        {errorMessage}
+                    </div>
+                )}
+                <form onSubmit={handleLogin} autoComplete="off">
+                    <div style={{ marginBottom: "16px" }}>
+                        <label htmlFor="identifier">DNI</label>
                         <input
-                            type="email"
-                            id="email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            autoComplete="email"
+                            id="identifier"
+                            type="text"
+                            name="identifier"
+                            value={formValues.identifier}
+                            onChange={handleInputChange}
+                            autoComplete="off"
                         />
                     </div>
-                    <div className="form-group">
+                    <div style={{ marginBottom: "16px" }}>
                         <label htmlFor="password">Contraseña</label>
                         <input
-                            type="password"
                             id="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            autoComplete="current-password"
+                            type="password"
+                            name="password"
+                            value={formValues.password}
+                            onChange={handleInputChange}
+                            autoComplete="off"
                         />
                     </div>
-                    {message && (
-                        <p
-                            className={
-                                message.includes('incorrectos') || message.includes('completa')
-                                    ? 'error-message'
-                                    : 'success-message'
-                            }
-                        >
-                            {message}
-                        </p>
-                    )}
-                    <button type="submit">Entrar</button>
-                    <button type="button" className="outline-btn" onClick={onClose}>Cerrar</button>
+                    <div className="modal__separator"></div>
+                    <button type="submit" className="btn-filled">
+                        Iniciar Sesión
+                    </button>
                 </form>
             </div>
         </div>
     );
-}
+};
+
+export default LoginModal;

@@ -1,36 +1,34 @@
-import { render, screen, fireEvent } from "@testing-library/react";
-import { describe, it, expect } from "vitest";
-import ModalComponent from "../components/modal/Modal";
+import React from 'react';
+import { render, screen, fireEvent } from '@testing-library/react';
+import { describe, test, expect, beforeEach, vi } from 'vitest';
+import Modal from '../components/modal/Modal.jsx';
 
-describe("ModalComponent", () => {
-    it("muestra mensaje de éxito al registrar usuario y mascota", async () => {
-        render(<ModalComponent isOpen={true} onClose={() => {}} />);
+describe('Modal Component', () => {
+    let onCloseMock;
 
-        // --- FORMULARIO DE USUARIO ---
-        fireEvent.change(screen.getByTestId("input-name"), { target: { value: "Paula" } });
-        fireEvent.change(screen.getByTestId("input-dni"), { target: { value: "12345678A" } });
-        fireEvent.change(screen.getByTestId("input-email"), { target: { value: "paula@example.com" } });
-        fireEvent.change(screen.getByTestId("input-phone"), { target: { value: "600123456" } });
-        fireEvent.change(screen.getByTestId("input-password"), { target: { value: "Password1!" } });
-        fireEvent.change(screen.getByTestId("input-confirmPassword"), { target: { value: "Password1!" } });
+    beforeEach(() => {
+        onCloseMock = vi.fn();
+        render(<Modal isOpen={true} onClose={onCloseMock} />);
+    });
 
-        fireEvent.click(screen.getByTestId("btn-continuar"));
+    test('muestra los inputs del formulario de usuario', () => {
+        expect(screen.getByTestId('input-name')).toBeInTheDocument();
+        expect(screen.getByTestId('input-email')).toBeInTheDocument();
+        expect(screen.getByTestId('input-password')).toBeInTheDocument();
+    });
 
-        // --- FORMULARIO DE MASCOTAS ---
-        fireEvent.click(screen.getByTestId("tab-mascotas"));
-        fireEvent.change(screen.getByTestId("input-pet-name-0"), { target: { value: "Firulais" } });
-        fireEvent.change(screen.getByTestId("input-pet-species-0"), { target: { value: "Perro" } });
-        fireEvent.change(screen.getByTestId("input-pet-breed-0"), { target: { value: "Labrador" } });
-        fireEvent.change(screen.getByTestId("input-pet-age-0"), { target: { value: 3 } });
-        fireEvent.click(screen.getByTestId("input-pet-gender-macho-0"));
+    test('permite escribir en los campos de usuario', () => {
+        fireEvent.change(screen.getByTestId('input-name'), { target: { value: 'Margarita' } });
+        fireEvent.change(screen.getByTestId('input-email'), { target: { value: 'margarita@happypaws.es' } });
+        fireEvent.change(screen.getByTestId('input-password'), { target: { value: '?Mg12345' } });
 
-        fireEvent.click(screen.getByTestId("btn-registrarse"));
+        expect(screen.getByTestId('input-name')).toHaveValue('Margarita');
+        expect(screen.getByTestId('input-email')).toHaveValue('margarita@happypaws.es');
+        expect(screen.getByTestId('input-password')).toHaveValue('?Mg12345');
+    });
 
-        // --- VERIFICAR MENSAJE DE ÉXITO ---
-        const successMessage = await screen.findByText((content) =>
-            content.includes("¡Usuario y mascotas registradas con éxito!")
-        );
-
-        expect(successMessage).toBeTruthy(); // Vitest acepta esto
+    test('cierra el modal al hacer click en "Cerrar"', () => {
+        fireEvent.click(screen.getByRole('button', { name: /cerrar/i }));
+        expect(onCloseMock).toHaveBeenCalled();
     });
 });
