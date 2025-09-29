@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import Nav from './components/Nav';
-import Footer from './components/Footer';
-import Home from "./pages/Home";
-import LoginModal from './components/LoginModal';
+import Nav from './components/nav/nav';
+import Footer from './components/footer/Footer';
+import Home from "./pages/home/Home";
+import LoginModal from './components/loginmodal/LoginModal';
 import './App.css';
 
 function App() {

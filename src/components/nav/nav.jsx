@@ -1,6 +1,6 @@
 import './Nav.css';
-import navImage from '../assets/images/Logo-Happy-Paws.svg';
-import userIcon from "../assets/images/icons/user dark.svg";
+import navImage from '../../assets/images/Logo-Happy-Paws.svg';
+import userIcon from '../../assets/images/icons/user dark.svg';
 
 export default function Nav({ onLoginClick }) {
     return (

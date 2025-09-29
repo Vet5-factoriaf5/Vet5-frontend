@@ -2,7 +2,7 @@
 
 import React from "react";
 import "./Home.css";
-import bannerImage from "../assets/images/banner-ok.webp";
+import bannerImage from "../../assets/images/banner-ok.webp";
 
 function Home() {
     return (
