@@ -1,14 +1,10 @@
 import React, { useState } from 'react';
-
-// NOTE: This component is updated to make a GET request using Basic Authentication
-// to match the successful Postman test setup.
-
-// Using the URL path observed in your console error.
-const BACKEND_LOGIN_URL = 'http://localhost:8080/api/v1/login';
+import api from '../api/axiosConfig'; 
 
 /**
  * Basic Login Form Component
- * Simulates a GET request with Basic Authentication to a Spring Boot backend.
+ * Uses the centralized 'api' Axios instance (configured in axiosConfig.js)
+ * to perform a Basic Authentication GET request for login.
  */
 function LoginPage() {
   const [username, setUsername] = useState('');
@@ -27,40 +23,44 @@ function LoginPage() {
     const credentialsBase64 = btoa(`${username}:${password}`);
 
     try {
-      // 2. Making the Request (Method changed to GET)
-      const response = await fetch(BACKEND_LOGIN_URL, {
-        method: 'GET', // <-- Changed from POST to GET
+      // 2. Making the Request using the configured 'api' instance
+      // The baseURL ('http://localhost:8080/api/v1') is automatically prepended to '/login'.
+      // 'withCredentials: true' is automatically included from axiosConfig.js.
+      const response = await api.get('/login', {
         headers: {
-          // Set the Authorization header for Basic Auth
+          // Set the Authorization header for Basic Auth dynamically
           'Authorization': `Basic ${credentialsBase64}`,
-          // We don't need 'Content-Type': 'application/json' since we aren't sending a body
         },
-        // IMPORTANT: No 'body' parameter is needed for a GET request
       });
 
-      // 3. Handling the Response
-      if (response.ok) {
-        // Since this is Basic Auth, the backend usually just returns the authenticated user object,
-        // or a success status, often with a session cookie (JSESSIONID).
-        const data = await response.text(); 
-        
-        // In a real app, you might look for a token if your controller is customized,
-        // but with default Basic Auth, the success is confirmed by the status code.
+      // 3. Handling the Successful Response
+      // Axios response data is automatically parsed and available on response.data
+      const data = response.data; 
+      
+      // Store user state or token here (next step in a real app)
+      
+      setMessage(`Login successful! Welcome, ${data.username || username}.`);
+      console.log('Authentication successful. Response data:', data);
 
-        setMessage(`Login successful! You are now authenticated.`);
-        console.log('Authentication successful. Response data:', data);
 
-      } else if (response.status === 401) {
-        // Unauthorized
-        setMessage('Login failed: Invalid username or password (401 Unauthorized).');
-      } else {
-        // Other errors (e.g., 500 server error)
-        const errorData = await response.text();
-        setMessage(`Login failed with status ${response.status}: ${errorData}`);
-      }
     } catch (error) {
-      // Network or parsing errors
-      setMessage(`An error occurred: ${error.message}. Check if the backend is running on ${BACKEND_LOGIN_URL}.`);
+      // 4. Handling Errors (Axios error handling)
+      if (error.response) {
+        // The request was made and the server responded with a status code outside 2xx
+        if (error.response.status === 401) {
+          setMessage('Login failed: Invalid username or password (401 Unauthorized).');
+        } else {
+          // General server error
+          const errorMessage = error.response.data?.message || error.response.statusText;
+          setMessage(`Login failed with status ${error.response.status}: ${errorMessage}`);
+        }
+      } else if (error.request) {
+        // The request was made but no response was received (e.g., server offline)
+        setMessage(`An error occurred: No response received. Check if the backend is running and accessible.`);
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        setMessage(`An unknown client error occurred: ${error.message}`);
+      }
     } finally {
       setIsLoading(false);
     }
@@ -70,7 +70,7 @@ function LoginPage() {
     <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
       <div className="w-full max-w-md bg-white p-8 rounded-xl shadow-2xl">
         <h2 className="text-3xl font-extrabold text-gray-900 mb-6 text-center">
-          Backend Login Test (Basic Auth)
+          Backend Login Test (Axios Configured)
         </h2>
 
         {/* Status Message Display */}
@@ -137,7 +137,7 @@ function LoginPage() {
           </div>
         </form>
         <p className="mt-6 text-xs text-center text-gray-500">
-          Target API: <code className="bg-gray-200 p-1 rounded text-indigo-600 break-all">{BACKEND_LOGIN_URL}</code>
+          Request URL: <code className="bg-gray-200 p-1 rounded text-indigo-600 break-all">http://localhost:8080/api/v1/login</code>
         </p>
       </div>
     </div>
