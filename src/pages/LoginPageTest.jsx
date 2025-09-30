@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import api from '../api/axiosConfig';
-import {Link} from 'react-router-dom'; 
+import { Link } from 'react-router-dom'; 
+// MODIFIED: Import the centralized login function
+import { login } from '../api/authApi'; 
 
 /**
  * Basic Login Form Component
- * Uses the centralized 'api' Axios instance (configured in axiosConfig.js)
- * to perform a Basic Authentication GET request for login.
+ * Now uses the centralized 'login' function from authApi.js.
  */
 function LoginPage() {
   const [username, setUsername] = useState('');
@@ -19,33 +19,17 @@ function LoginPage() {
     setIsLoading(true);
     setMessage('');
     
-    // 1. Construct the Basic Auth Header Value
-    // Format: "username:password" encoded in Base64
-    const credentialsBase64 = btoa(`${username}:${password}`);
-
     try {
-      // 2. Making the Request using the configured 'api' instance
-      // The baseURL ('http://localhost:8080/api/v1') is automatically prepended to '/login'.
-      // 'withCredentials: true' is automatically included from axiosConfig.js.
-      const response = await api.get('/login', {
-        headers: {
-          // Set the Authorization header for Basic Auth dynamically
-          'Authorization': `Basic ${credentialsBase64}`,
-        },
-      });
+      // 2. Making the Request using the centralized login function
+      // This is much cleaner and separates concerns.
+      const data = await login(username, password);
 
       // 3. Handling the Successful Response
-      // Axios response data is automatically parsed and available on response.data
-      const data = response.data; 
-      
-      // Store user state or token here (next step in a real app)
-      
       setMessage(`Login successful! Welcome, ${data.username || username}.`);
       console.log('Authentication successful. Response data:', data);
 
-
     } catch (error) {
-      // 4. Handling Errors (Axios error handling)
+      // 4. Handling Errors (Error logic remains in UI for specific display messages)
       if (error.response) {
         // The request was made and the server responded with a status code outside 2xx
         if (error.response.status === 401) {

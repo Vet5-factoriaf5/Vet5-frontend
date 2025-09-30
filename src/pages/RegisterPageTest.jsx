@@ -1,17 +1,8 @@
 import React, { useState } from "react";
-import axios from "axios";
 import { Link } from "react-router-dom";
-
-// --- Axios Instance Configuration ---
-// It's a good practice to create an axios instance for your API.
-// This allows you to centralize configuration like the base URL.
-// Your Spring Boot backend is likely running on localhost:8080.
-const apiClient = axios.create({
-  baseURL: "http://localhost:8080/api/v1", // Adjust this URL to your backend's address
-  headers: {
-    "Content-Type": "application/json",
-  },
-});
+// MODIFIED: Import the centralized register function
+import { register } from '../api/authApi'; 
+// REMOVED: import axios from "axios"; and the local apiClient instance
 
 const RegistrationForm = () => {
   // --- State Management ---
@@ -28,7 +19,7 @@ const RegistrationForm = () => {
   const [message, setMessage] = useState({ text: "", type: "" }); // type can be 'success' or 'error'
   const [errors, setErrors] = useState({});
 
-  // --- Handlers ---
+  // ... (handleChange and validateForm functions unchanged)
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
@@ -63,6 +54,7 @@ const RegistrationForm = () => {
     return Object.keys(newErrors).length === 0;
   };
 
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage({ text: "", type: "" });
@@ -74,7 +66,7 @@ const RegistrationForm = () => {
     setIsSubmitting(true);
 
     try {
-      // We send the core data, include confirmPassword.
+      // Prepare the payload (includes password/confirmPassword for registration)
       const userData = {
         fullName: formData.fullName,
         username: formData.username,
@@ -84,10 +76,10 @@ const RegistrationForm = () => {
         confirmPassword: formData.confirmPassword,
       };
 
-      // --- API Call using Axios ---
-      const response = await apiClient.post("/register", userData); // Endpoint is now relative to the baseURL
+      // --- API Call using the centralized register function ---
+      const responseData = await register(userData);
 
-      console.log("Registration successful:", response.data);
+      console.log("Registration successful:", responseData);
       setMessage({
         text: "Registration successful! You can now log in.",
         type: "success",
@@ -117,7 +109,7 @@ const RegistrationForm = () => {
     }
   };
 
-  // --- Render Method ---
+  // --- Render Method (unchanged) ---
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100 font-sans">
       <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-md m-4">
@@ -140,7 +132,7 @@ const RegistrationForm = () => {
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Form Fields */}
+          {/* Form Fields (unchanged) */}
           <div>
             <label
               htmlFor="fullName"
