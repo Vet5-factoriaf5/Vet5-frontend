@@ -22,7 +22,7 @@ function App() {
   ]);
 
   return (
-    <>
+    <div className="app-container">
       <Nav onLoginClick={() => setIsLoginOpen(true)} />
       <Home onRegisterClick={() => setIsRegisterOpen(true)} />
       <Footer />
@@ -41,7 +41,7 @@ function App() {
         users={users} // Pasamos los usuarios registrados
         onRegister={(newUser) => setUsers((prev) => [...prev, newUser])} // Permite agregar un nuevo usuario desde el login
       />
-    </>
+    </div>
   );
 }
 

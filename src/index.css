@@ -1,9 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
 
-/*
-  Variables raíz para colores y tipografía
-  Definir variables CSS globales para un tema consistente y uso de fuentes en toda la aplicación
-*/
+/* Variables raíz para colores y tipografía */
 :root {
   --color-darkest: #073a45;
   --color-primary: #1a8b8e;
@@ -19,20 +16,14 @@
   --font-family-base: 'Montserrat', system-ui, Avenir, Helvetica, Arial, sans-serif;
 }
 
-/*
-  Reseteo básico de CSS
-  Eliminar margen y relleno por defecto, establecer box-sizing en border-box para un control más fácil del diseño
-*/
+/* Reseteo básico de CSS */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-/*
-  Estilos base para html y body
-  Asegurar altura completa y aplicar fuente global y colores de fondo para la aplicación
-*/
+/* Estilos base para html y body */
 html,
 body {
   height: 100%;
@@ -46,17 +37,32 @@ body {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
+
+#root {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Footer */
+.footer {
+  position: relative;
+  bottom: 0;
+  width: 100%;
+}
+
+/* Resto del CSS se mantiene igual */
 
 line {
   line-height: 1px;
   color: var(--color-secondary);
 }
-/* ========================
-  Estilos de tipografía para encabezados y párrafos
-  Fuente consistente, color, margen y altura de línea para elementos de texto
-  ======================== */
 
+/* Tipografía para encabezados y párrafos */
 h1,
 h2,
 h3,
@@ -92,10 +98,7 @@ p {
   margin-bottom: 1em;
 }
 
-/* ========================
-  Clase para el fondo de formularios
-  Proporciona borde transparente, esquinas redondeadas y un fondo claro para diferenciar el formulario del fondo general
-  ======================== */
+/* Fondo para formularios */
 .form-background {
   border: 0px ridge transparent;
   border-radius: 10px;
@@ -103,14 +106,9 @@ p {
   background-color: var(--color-light-grey);
 }
 
-/* ========================
-  Modal
-  ======================== */
-/* CSS adicional para modal y tabs (agrega a index.css o un archivo separado) */
-/* Modal base: Overlay fijo, centrado con Flexbox */
+/* Modal */
 .modal {
   display: flex;
-  /* Para centrar contenido */
   position: fixed;
   top: 0;
   left: 0;
@@ -118,36 +116,28 @@ p {
   height: 100%;
   background: rgba(0, 0, 0, 0.4);
   border: 1px solid var(--color-secondary);
-  /* Semi-transparente */
   justify-content: center;
   align-items: center;
   z-index: 1000;
-  /* Sobre otros elementos */
 }
 
-/* Contenido del modal: Usa tu .form-background */
 .modal-content {
   position: relative;
   max-width: 500px;
   width: 70%;
   padding: 4rem;
   border-radius: 10px;
-  -webkit-box-shadow: 5px 1px 18px -5px rgba(0,0,0,0.2); 
   box-shadow: 5px 1px 18px -5px rgba(0,0,0,0.2);
-
-  /* Glassmorphic effect */
-  background: rgba(255, 255, 255, 0.45); /* semi-transparent white */
-  backdrop-filter: blur(10px); /* glassmorphic blur */
-  border: 1px solid var(--color-light-grey); 
+  background: rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--color-light-grey);
 }
 
-
-/* Tabs: Horizontal con Flexbox, responsive */
+/* Tabs */
 .tabs {
   display: flex;
   margin-bottom: 1rem;
   gap: 24px;
-  /* Espacio entre tabs */
 }
 
 .tab-link {
@@ -169,7 +159,7 @@ p {
   position: absolute;
   bottom: 0;
   left: 0;
-  width: 100%; /* underline spans full width */
+  width: 100%;
   height: 3px;
   background: transparent;
   transition: background 0.3s ease;
@@ -179,17 +169,14 @@ p {
   background: var(--color-primary);
 }
 
-/* Contenido de tabs: Oculto por default */
 .tab-content {
   display: none;
 }
 
 .tab-content.active {
   display: block;
-  /* Muestra activo */
 }
 
-/* Cierre: Posicionado absoluto */
 .close {
   position: absolute;
   top: 10px;
@@ -199,29 +186,18 @@ p {
   color: var(--color-text);
 }
 
-/* Media query adicional si necesitas (integra con las tuyas) */
 @media (max-width: 480px) {
   .tabs {
     flex-direction: column;
-    /* Tabs verticales en móvil */
   }
 }
 
-
-/* ========================
-Estilo globales botónes
-   ======================== */
-
-/*
-  Botón con fondo completo
-  Fondo con color primario, texto blanco, borde redondeado y efecto hover con opacidad al 70%
-*/
+/* Botones */
 .btn-filled {
   background-color: var(--color-primary);
   color: white;
   border-radius: 7px;
   min-width: 120px;
-  /* ancho mínimo */
   min-height: 38px;
   border: none;
   cursor: pointer;
@@ -233,16 +209,11 @@ Estilo globales botónes
   opacity: 0.7;
 }
 
-/* 
-  Botón con estilo outline
-  Fondo transparente, borde lineal con color primario, texto con color primario, borde redondeado y hover con fondo primario y texto blanco
-*/
 .btn-outline {
   background-color: transparent;
   color: var(--color-primary);
   border: 1px solid var(--color-primary);
   min-width: 120px;
-  /* ancho mínimo */
   min-height: 38px;
   border-radius: 7px;
   cursor: pointer;
@@ -255,12 +226,7 @@ Estilo globales botónes
   color: white;
 }
 
-/* ======================== 
-  Estilos globales para inputs checkbox y radio button
-  Personalización de color, tamaño, esquinas redondeadas y transiciones suaves.
-    ======================== */
-
-/* Custom checkbox styles */
+/* Inputs checkbox personalizados */
 input[type="checkbox"] {
   appearance: none;
   -webkit-appearance: none;
@@ -295,7 +261,7 @@ input[type="checkbox"]:checked::after {
   pointer-events: none;
 }
 
-/* Radio button personalizado */
+/* Radio button personalizados */
 input[type="radio"] {
   appearance: none;
   -webkit-appearance: none;
@@ -330,14 +296,11 @@ input[type="radio"]:checked::after {
   transition: background 0.2s;
 }
 
-/* ========================
-  Estilos generales para etiquetas <label>
-  Proporciona fuente, color y espaciado consistente con el resto de la aplicación
-  ======================== */
+/* Etiquetas label */
 label {
   font-family: var(--font-family-base);
   color: var(--color-text);
-  font-size: 0,8rem;
+  font-size: 0.8rem;
   cursor: pointer;
   padding: 0.2em 0.4em;
   display: inline-block;
@@ -345,26 +308,19 @@ label {
   font-weight: 500;
 }
 
-/*
-  Clase para labels que necesiten mostrar alerta o error
-  Texto rojo, fondo transparente y borde outline rojo
-  Mantiene padding y fuente consistente con los labels normales
-*/
+/* Labels con alerta */
 .label-alert {
   color: var(--color-alert);
   background: transparent;
   outline: 1px solid var(--color-alert);
   padding: 0.2em 0.4em;
   font-family: var(--font-family-base);
-  font-size: 0,8rem;
+  font-size: 0.8rem;
   font-weight: 500;
   border-radius: 4px;
 }
 
-/* ========================
-  Estilos globales para inputs de formulario (text, email, password, select, textarea)
-  Base, estados y utilidades para inputs accesibles y consistentes
-  ======================== */
+/* Inputs de formulario */
 input[type="text"],
 input[type="email"],
 input[type="password"],
@@ -409,24 +365,18 @@ textarea:disabled {
   cursor: not-allowed;
 }
 
-/* Utilidades para estados de validación */
+/* Estados de validación */
 .input-error {
   border-color: var(--color-alert) !important;
   color: var(--color-alert) !important;
 }
 
 .input-success {
-  /* al seleccionar la etiqueta cambia de color */
   border-color: #2a7a2a !important;
-  /* Verde oscuro */
   color: var(--color-darkest) !important;
 }
 
-/* ========================
-  Clases de accesibilidad y utilidades
-  ======================== */
-
-/* Ocultar visualmente pero mantener para lectores de pantalla */
+/* Clases de accesibilidad y utilidades */
 .sr-only {
   position: absolute !important;
   width: 1px !important;
@@ -439,21 +389,15 @@ textarea:disabled {
   border: 0 !important;
 }
 
-/* Centrar texto */
 .text-center {
   text-align: center !important;
 }
 
-/* Ocultar elementos visualmente y del flujo */
 .hidden {
   display: none !important;
 }
 
-/* ========================
-  Media Query: Tablets
-  ========================
-  Para pantallas de hasta 768px de ancho
-*/
+/* Media Query: Tablets */
 @media (max-width: 768px) {
   h1 {
     font-size: 2rem;
@@ -499,11 +443,7 @@ textarea:disabled {
   }
 }
 
-/* ========================
-  Media Query: Móviles
-  ========================
-  Para pantallas de hasta 480px de ancho
-*/
+/* Media Query: Móviles */
 @media (max-width: 480px) {
   h1 {
     font-size: 1.4rem;
@@ -551,19 +491,14 @@ textarea:disabled {
     margin-bottom: 0.5em;
   }
 
-  /*---------
-Pruebas
------------*/
-
+  /* Navbar pruebas */
   .navbar {
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    /* logo a la izquierda */
     padding: 1rem;
     border-color: var(--color-primary);
     background-color: var(--color-primary);
-    /* gris suave */
     border-bottom: 1px solid #ddd;
   }
 
@@ -571,7 +506,6 @@ Pruebas
     height: 40px;
   }
 
-  /* En móvil, centramos el logo */
   @media (max-width: 768px) {
     .navbar {
       justify-content: center;

@@ -47,7 +47,7 @@ html {
     background: rgba(255, 255, 255, 0.85); /* semi-transparent white */
     backdrop-filter: blur(10px); /* glassmorphic blur */
     border: 1px solid var(--color-primary);
-    width: 100%;
+    width: 80%;
     box-sizing: border-box;
 }
 
