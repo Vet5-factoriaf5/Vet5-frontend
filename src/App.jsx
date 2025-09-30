@@ -21,6 +21,19 @@ function App() {
     }
   ]);
 
+  // --- CÓDIGO AÑADIDO ---
+  // Esta función se encargará de recibir el nuevo usuario desde el ModalComponent
+  // y añadirlo a la lista de usuarios.
+  const handleRegister = (newUserData) => {
+    setUsers((prevUsers) => {
+      console.log("Nuevo usuario registrado:", newUserData);
+      // Creamos una nueva lista con los usuarios anteriores más el nuevo
+      return [...prevUsers, newUserData];
+    });
+    // El modal se cerrará por su propia lógica interna después de esto.
+  };
+  // --- FIN DEL CÓDIGO AÑADIDO ---
+
   return (
     <div className="app-container">
       <Nav onLoginClick={() => setIsLoginOpen(true)} />
@@ -31,7 +44,9 @@ function App() {
       <ModalComponent
         isOpen={isRegisterOpen}
         onClose={() => setIsRegisterOpen(false)}
-        setUsers={setUsers} // Pasamos la función para actualizar usuarios
+        // --- LÍNEA MODIFICADA ---
+        // Conectamos la función handleRegister a la prop onRegister del modal.
+        onRegister={handleRegister}
       />
 
       {/* Modal de login */}
@@ -39,7 +54,6 @@ function App() {
         isOpen={isLoginOpen}
         onClose={() => setIsLoginOpen(false)}
         users={users} // Pasamos los usuarios registrados
-        onRegister={(newUser) => setUsers((prev) => [...prev, newUser])} // Permite agregar un nuevo usuario desde el login
       />
     </div>
   );

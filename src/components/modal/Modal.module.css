@@ -1,26 +1,6 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-html {
-    font-size: clamp(14px, 1.2vw, 18px);
-}
-
-.modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-}
-
+/* ========================================
+    Contenedor Principal del Modal
+   ======================================== */
 .modal {
     display: flex;
     position: fixed;
@@ -31,282 +11,168 @@ html {
     justify-content: center;
     align-items: center;
     z-index: 1000;
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-color: transparent;
+    background-color: rgba(0, 0, 0, 0.3);
 }
 
 .modal__content {
     position: relative;
     border-radius: 10px;
-    box-shadow: 5px 1px 18px -5px rgba(0, 0, 0, 0.9);
-    margin: 0 auto;
-    scroll-behavior: smooth;
-    padding: 1rem 1rem 2rem 1rem;
-    background: rgba(255, 255, 255, 0.85); /* semi-transparent white */
-    backdrop-filter: blur(10px); /* glassmorphic blur */
-    border: 1px solid var(--color-primary);
-    width: 80%;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    padding: 1.5rem 2rem 0; /* Espacio interno, sin padding inferior */
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(10px);
+    border: 1.5px solid var(--color-primary);
+    width: clamp(320px, 90%, 500px); /* Ancho adaptable */
     box-sizing: border-box;
+    max-height: 90vh; /* Altura máxima para adaptarse a todas las pantallas */
+    display: flex;
+    flex-direction: column;
 }
 
 .modal__close {
     position: absolute;
-    top: 10px;
-    right: 10px;
-    font-size: 1.2rem;
+    top: 15px;
+    right: 15px;
+    font-size: 1.5rem;
     background: none;
     border: none;
     cursor: pointer;
-}
-
-/* ========================
-    Tabs
-  ======================== */
-
-.modal__tabs {
-    display: flex;
-    gap: 24px;
-    margin-bottom: 1rem;
-    width: 100%;
-}
-
-.modal__tab-link {
-    position: relative;
-    flex: 1;
-    padding: 0.75rem 1rem;
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    font-weight: 600;
     color: var(--color-text);
-    border-bottom: 2px solid transparent;
-    transition: color 0.3s ease, border-bottom-color 0.3s ease, background-color 0.3s ease;
-    border-radius: 4px 4px 0 0;
-    height: 48px;
-    text-align: center;
-    min-width: 0;
+    z-index: 10;
+    transition: color 0.2s ease;
 }
 
-.modal__tab-link::after {
-    content: "";
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 3px;
-    background: transparent;
-    transition: background 0.3s ease;
-}
-
-.modal__tab-link--active::after {
-    background: var(--color-primary);
-}
-
-.modal__tab-content {
-    width: 100%;
-    box-sizing: border-box;
-}
-
-.modal__tab-content label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: 600;
-}
-
-/* ========================
-    Form and Buttons
-  ======================== */
-
-.modal__buttons {
-    font-family: var(--font-family-base);
-    display: flex;
-    gap: 48px;
-    margin-top: 24px !important;
-    flex-wrap: wrap;
-    width: 100%;
-    justify-content: center;
-}
-
-/* ========================
-    Media Queries
-  ======================== */
-
-.modal__glass {
-    width: clamp(300px, 80%, 600px);
-}
-
-@media (min-width: 1200px) {
-}
-
-@media (max-width: 1024px) and (min-width: 769px) {
-}
-
-@media (max-width: 768px) and (min-width: 601px) {
-    .modal__glass {
-        padding: 1.5rem;
-    }
-}
-
-@media (max-width: 600px) {
-    .modal__glass {
-        padding: 1rem;
-    }
-    
-    .modal__buttons {
-        gap: 16px;
-    }
-    
-    .modal__tab-link {
-        flex: 1;
-        min-width: 120px;
-        font-size: 0.9rem;
-        padding: 0.5rem 0.75rem;
-    }
-}
-
-/* ========================
-    Separators
-  ======================== */
+/* .modal__close:hover {
+    color: var(--color-medium-grey);
+} */
 
 .modal__separator {
     height: 1px;
-    background-color: var(--color-secondary);
-    margin: 16px 0;
+    background-color: var(--color-primary);
+    margin: 1rem 0;
     width: 100%;
 }
 
-/* ========================
-    Radio Groups
-  ======================== */
+/* ========================================
+    Contenido y Área de Scroll
+   ======================================== */
+.modal__tab-content {
+    flex-grow: 1; /* Ocupa el espacio vertical disponible */
+    overflow-y: auto; /* Activa el scroll vertical SOLO si es necesario */
+    padding: 0.5rem; /* Pequeño padding para el área de scroll */
+    margin: 0 -0.5rem; /* Compensa el padding para mantener la alineación */
+}
 
-.modal__radio-group {
+/* ========================================
+    Campos del Formulario (Solución Definitiva)
+   ======================================== */
+.formField {
     display: flex;
-    gap: 16px;
-    flex-wrap: wrap;
-    width: 100%;
+    flex-direction: column; /* Apila etiqueta e input verticalmente */
+    margin-bottom: 1.25rem; /* Espacio consistente entre cada campo */
 }
 
-.modal__radio-group > div {
-    margin-bottom: 0;
+.formField label {
     display: flex;
     align-items: center;
-    gap: 8px;
-    flex: 1 1 40%;
-    max-width: 150px;
-}
-
-.modal__radio-group label {
-    white-space: nowrap;
-    max-width: 50%;
-    font-size: 14px;
-    line-height: 1.5;
-}
-
-.modal__radio-group input[type="radio"] {
-    margin-bottom: 0;
-    width: 16px;
-    height: 16px;
-    margin-right: 4px;
-}
-
-@media (max-width: 600px) {
-    .modal__radio-group {
-        flex-direction: column;
-        gap: 8px;
-    }
-    .modal__radio-group label {
-        max-width: 100%;
-    }
-}
-
-/* ========================
-    Pet Blocks
-  ======================== */
-
-.pet-block {
-    border-bottom: 1px solid ;
-    padding-bottom: 16px;
-    margin-bottom: 16px;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-}
-
-.pet-block label {
-    display: block;
+    min-height: 18px; /* Altura mínima para alinear todas las etiquetas */
+    margin-bottom: 4.5px; /* Espacio entre la etiqueta y el campo */
     font-weight: 600;
-    margin-bottom: 8px;
+    font-size: 0.9rem;
+    color: var(--color-text);
 }
 
-.pet-block > div {
-    margin-bottom: 16px;
-}
-
-.pet-block + .pet-block {
-    margin-top: 16px;
-}
-
-/* ========================
-    Form Fields
-  ======================== */
-
-.modal__content input,
-.modal__content select,
-.modal__content textarea,
-.modal__content form {
-    max-width: 100%;
-    box-sizing: border-box;
-}
-
-.modal__content input[type="text"],
-.modal__content input[type="email"],
-.modal__content input[type="tel"],
-.modal__content input[type="password"],
-.modal__content input[type="number"],
-.modal__content select,
-.modal__content textarea {
+/* Estilos base para todos los inputs */
+.formField input {
+    display: block;
     width: 100%;
-    padding: 8px 12px;
+    padding: 12px 15px; /* Padding interno para que el texto no se pegue */
+    font-size: 0.8rem;
     border: 1px solid var(--color-medium-grey);
-    border-radius: 4px;
-    font-size: 14px;
+    border-radius: 8px;
     box-sizing: border-box;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.modal__content button {
-    max-width: 200px;
-    padding: 10px 20px;
-    box-sizing: border-box;
+.formField input:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 2px rgba(26, 139, 142, 0.2);
 }
 
-/* ========================
-    Success Message
-  ======================== */
+/* ========================================
+    Campos de Contraseña con Icono
+   ======================================== */
+.passwordWrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.passwordWrapper input {
+    /* Ajustamos el padding derecho para dejar espacio al icono */
+    padding-right: 45px !important;
+}
+
+.eyeIcon {
+    position: absolute;
+    right: 15px;
+    cursor: pointer;
+    font-size: 1.3rem;
+    user-select: none; /* Evita que el icono se seleccione como texto */
+    color: var(--color-medium-grey);
+}
+
+/* ========================================
+    Mensajes de Estado (Error y Éxito)
+   ======================================== */
+.modal__error-message {
+    padding: 10px;
+    background: rgba(25, 121, 123, 0.10);
+    color: var(--color-alert);
+    border: 1px solid var(--color-alert);
+    border-radius: 8px;
+    text-align: center;
+    margin-bottom: 1rem;
+}
 
 @keyframes fadeInOut {
-    0% { opacity: 0; transform: translateY(-10px); }
-    10% { opacity: 1; transform: translateY(0); }
-    90% { opacity: 1; transform: translateY(0); }
-    100% { opacity: 0; transform: translateY(-10px); }
+    0% { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
+    15% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+    85% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+    100% { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
 }
 
 .modal__success-message {
-    background: rgba(235, 252, 252, 0.85); /* semi-transparent white */
-    backdrop-filter: blur(10px); /* glassmorphic blur */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 20;
+    background: rgb(235, 248, 248);
     border: 1px solid var(--color-primary);
-    border-radius: 10px;
-    padding: 1.5rem 2rem;
+    border-radius: 12px;
+    padding: 2rem 3rem;
     text-align: center;
     color: var(--color-darkest);
     font-weight: 600;
-    font-size: 1rem;
-    width: 90%;
-    max-width: 400px;
-    margin: 0 auto 16px auto;
-    box-shadow: 5px 1px 18px -5px rgba(0, 0, 0, 0.9);
-    animation: fadeInOut 3s ease forwards;
-    position: relative;
+    font-size: 1.2rem;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    animation: fadeInOut 2s ease-in-out forwards;
+}
+
+/* ========================================
+    Footer Fijo con Botones
+   ======================================== */
+.modal__footer {
+    margin-top: auto; /* Empuja el footer hacia abajo */
+    padding: 1.5rem 0;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    flex-shrink: 0; /* Evita que el footer se encoja */
+    background-color: transparent; /* Un fondo sólido y limpio */
+    border-top: 1px solid #eee;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
 }

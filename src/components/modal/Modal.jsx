@@ -1,8 +1,9 @@
 import React, { useState, useRef } from "react";
 import styles from "./Modal.module.css";
-import "../../index.css";
+import "../../index.css"; // Asegúrate de que tus estilos globales estén importados
 
 const ModalComponent = ({ isOpen, onClose, onRegister }) => {
+    // --- ESTADOS DEL COMPONENTE ---
     const [formValues, setFormValues] = useState({
         name: "",
         dni: "",
@@ -11,21 +12,15 @@ const ModalComponent = ({ isOpen, onClose, onRegister }) => {
         password: "",
         confirmPassword: "",
     });
-    const [formErrors, setFormErrors] = useState({
-        name: false,
-        dni: false,
-        email: false,
-        phone: false,
-        password: false,
-        confirmPassword: false,
-    });
-    const [pets, setPets] = useState([
-        { name: "", species: "", breed: "", age: "", gender: "" },
-    ]);
-    const [activeTab, setActiveTab] = useState("register");
+    const [formErrors, setFormErrors] = useState({});
     const [successMessage, setSuccessMessage] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
+    
+    // Estados independientes para la visibilidad de cada campo de contraseña
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
+    // Referencias para el manejo del foco con la tecla Enter
     const inputRefs = {
         name: useRef(null),
         dni: useRef(null),
@@ -35,343 +30,146 @@ const ModalComponent = ({ isOpen, onClose, onRegister }) => {
         confirmPassword: useRef(null),
     };
 
-    if (!isOpen) return null;
+    // Si el modal no está abierto, no renderiza nada
+    if (!isOpen) {
+        return null;
+    }
 
+    // --- LÓGICA DE VALIDACIÓN ---
     const validators = {
         name: (val) => val.trim().length > 0,
         dni: (val) => /^[XYZ0-9]{1}[0-9]{7}[A-Z]{1}$/.test(val),
         email: (val) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val),
         phone: (val) => /^[\d\s+\-()]{6,}$/.test(val),
-        password: (val) =>
-            /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{8,}$/.test(val),
-        confirmPassword: (val) =>
-            /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{8,}$/.test(val) && val === formValues.password,
+        password: (val) => /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{8,}$/.test(val),
+        confirmPassword: (val) => val === formValues.password,
     };
 
+    // --- MANEJADORES DE EVENTOS ---
+
+    // Actualiza el estado del formulario al escribir en los inputs
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormValues((prev) => ({ ...prev, [name]: value }));
-        if (validators[name]) {
-            setFormErrors((prev) => ({ ...prev, [name]: !validators[name](value) }));
-        }
-        if (name === "password" && formValues.confirmPassword) {
-            setFormErrors((prev) => ({
-                ...prev,
-                confirmPassword: !validators.confirmPassword(formValues.confirmPassword),
-            }));
+        // Limpia el error del campo actual mientras el usuario escribe
+        if (formErrors[name]) {
+            setFormErrors((prev) => ({ ...prev, [name]: false }));
         }
     };
-
+    
+    // Permite navegar entre campos con la tecla Enter
     const handleKeyDown = (e) => {
         if (e.key === "Enter") {
             e.preventDefault();
-            const order = [
-                "name",
-                "dni",
-                "email",
-                "phone",
-                "password",
-                "confirmPassword",
-            ];
+            const order = ["name", "dni", "email", "phone", "password", "confirmPassword"];
             const idx = order.indexOf(e.target.name);
             if (idx !== -1 && idx < order.length - 1) {
-                const next = order[idx + 1];
-                inputRefs[next]?.current?.focus();
+                inputRefs[order[idx + 1]]?.current?.focus();
             }
         }
     };
 
-    const handlePetChange = (index, field, value) => {
-        setPets((prev) => {
-            const newPets = [...prev];
-            newPets[index] = { ...newPets[index], [field]: value };
-            return newPets;
-        });
-    };
-
-    const addPet = () => {
-        setPets((prev) => [...prev, { name: "", species: "", breed: "", age: "", gender: "" }]);
-    };
-
-    const handleTabChange = (tab) => {
-        if (tab === "pet") {
-            const errors = {};
-            Object.keys(formValues).forEach((key) => {
-                errors[key] = !validators[key](formValues[key]);
-            });
-            setFormErrors(errors);
-            const hasErrors = Object.values(errors).some((v) => v);
-            if (!hasErrors) setActiveTab("pet");
-        } else {
-            setActiveTab("register");
-        }
-    };
-
-    const handleContinue = () => {
-        handleTabChange("pet");
-    };
-
+    // Lógica principal al hacer clic en "Registrarse"
     const handleRegister = (e) => {
         e.preventDefault();
-        const hasValidPet = pets.some((pet) => pet.name.trim() && pet.species);
-        if (hasValidPet) {
-            setSuccessMessage("¡Usuario y mascotas registradas con éxito!");
-            onRegister({
-                name: formValues.name,
-                dni: formValues.dni,
-                email: formValues.email,
-                phone: formValues.phone,
-                password: formValues.password,
-                pets
-            });
-            setTimeout(() => {
-                setSuccessMessage("");
-                setFormValues({
-                    name: "",
-                    dni: "",
-                    email: "",
-                    phone: "",
-                    password: "",
-                    confirmPassword: "",
-                });
-                setPets([{ name: "", species: "", breed: "", age: "", gender: "" }]);
-                setActiveTab("register");
-                onClose();
-            }, 3000);
-        } else {
-            setErrorMessage("Por favor, completa al menos el nombre y tipo de una mascota");
-            setTimeout(() => {
-                setErrorMessage("");
-            }, 3000);
+        const errors = {};
+        let hasErrors = false;
+        // Valida todos los campos
+        Object.keys(validators).forEach((key) => {
+            if (!validators[key](formValues[key])) {
+                errors[key] = true;
+                hasErrors = true;
+            }
+        });
+        setFormErrors(errors);
+
+        if (hasErrors) {
+            setErrorMessage("Por favor, corrige los campos marcados.");
+            setTimeout(() => setErrorMessage(""), 3000);
+            return;
         }
+
+        // Si no hay errores, procede con el registro
+        setErrorMessage("");
+        setSuccessMessage("¡Usuario registrado con éxito!");
+        onRegister({ ...formValues });
+
+        // Espera 2 segundos para que el usuario vea el mensaje y luego cierra
+        setTimeout(() => {
+            setSuccessMessage("");
+            setFormValues({ name: "", dni: "", email: "", phone: "", password: "", confirmPassword: "" });
+            onClose();
+        }, 2000);
     };
 
+    // --- RENDERIZADO DEL COMPONENTE ---
     return (
-        <div
-            className={styles.modal}
-            style={{ backgroundPosition: "center" }}
-        >
+        <div className={styles.modal}>
             <div className={`${styles["modal__content"]} ${styles["modal__glass"]}`}>
-                <button
-                    className={styles["modal__close"]}
-                    onClick={() => {
-                        console.log("Cerrar modal manualmente");
-                        onClose();
-                    }}
-                    type="button"
-                    aria-label="Cerrar"
-                >
-                    ✕
-                </button>
+                {/* El mensaje de éxito se renderiza aquí para que pueda flotar por encima de todo */}
+                {successMessage && <div className={styles["modal__success-message"]}>{successMessage}</div>}
+
+                <button className={styles["modal__close"]} onClick={onClose} type="button" aria-label="Cerrar">✕</button>
                 <h2>Registro</h2>
                 <div className={styles.modal__separator}></div>
-                <div className={styles["modal__tabs"]}>
-                    <button
-                        type="button"
-                        className={`${styles["modal__tab-link"]} ${activeTab === "register"
-                            ? styles["modal__tab-link--active"]
-                            : ""
-                        }`}
-                        onClick={() => handleTabChange("register")}
-                    >
-                        Usuario
-                    </button>
-                    <button
-                        type="button"
-                        className={`${styles["modal__tab-link"]} ${activeTab === "pet"
-                            ? styles["modal__tab-link--active"]
-                            : ""
-                        }`}
-                        onClick={() => handleTabChange("pet")}
-                    >
-                        Mascotas
-                    </button>
-                </div>
-                {successMessage && (
-                    <div className={styles["modal__success-message"]} data-testid="success-message">
-                        {successMessage}
-                    </div>
-                )}
-                {errorMessage && (
-                    <div className={styles["modal__error-message"]} data-testid="error-message">
-                        {errorMessage}
-                    </div>
-                )}
+
+                {errorMessage && <div className={styles["modal__error-message"]}>{errorMessage}</div>}
+                
                 <div className={styles["modal__tab-content"]}>
-                    <form
-                        style={{ display: activeTab === "register" ? "block" : "none" }}
-                        autoComplete="off"
-                    >
+                    <form autoComplete="off">
                         {[
-                            { field: "name", label: "Nombre", placeholder: "Nombre completo", autoComplete: "name" },
-                            { field: "dni", label: "DNI", placeholder: "DNI o NIE", autoComplete: "off" },
-                            { field: "email", label: "Correo Electrónico", placeholder: "Correo electrónico", autoComplete: "email" },
-                            { field: "phone", label: "Teléfono", placeholder: "Teléfono", autoComplete: "tel" },
-                            { field: "password", label: "Contraseña", placeholder: "Contraseña", autoComplete: "new-password" },
-                            { field: "confirmPassword", label: "Confirmar Contraseña", placeholder: "Confirmar contraseña", autoComplete: "new-password" },
-                        ].map(({ field, label, placeholder, autoComplete }) => (
-                            <div key={field} style={{ marginBottom: "16px" }}>
+                            { field: "name", label: "Nombre", type: "text" },
+                            { field: "dni", label: "DNI", type: "text" },
+                            { field: "email", label: "Email", type: "email" },
+                            { field: "phone", label: "Teléfono", type: "tel" },
+                            { field: "password", label: "Contraseña", type: "password" },
+                            { field: "confirmPassword", label: "Confirmar Contraseña", type: "password" },
+                        ].map(({ field, label, placeholder, type }) => (
+                            <div key={field} className={styles.formField}>
                                 <label htmlFor={field}>{label}</label>
-                                <input
-                                    id={field}
-                                    type={
-                                        field === "password" || field === "confirmPassword"
-                                            ? "password"
-                                            : field === "phone"
-                                            ? "tel"
-                                            : "text"
-                                    }
-                                    name={field}
-                                    value={formValues[field]}
-                                    onChange={handleInputChange}
-                                    onKeyDown={handleKeyDown}
-                                    ref={inputRefs[field]}
-                                    className={formErrors[field] ? "input-error" : ""}
-                                    placeholder={placeholder}
-                                    autoComplete={autoComplete}
-                                    data-testid={`input-${field}`}
-                                />
-                                {formErrors[field] && (
-                                    <span
-                                        className="input-error-message"
-                                        style={{ fontSize: "10px" }}
-                                    >
-                                        {field === "dni"
-                                            ? "Formato DNI/NIE inválido"
-                                            : field === "email"
-                                            ? "Formato de correo inválido"
-                                            : field === "phone"
-                                            ? "Formato de teléfono inválido"
-                                            : field === "password"
-                                            ? "Contraseña inválida"
-                                            : field === "name"
-                                            ? "Nombre requerido"
-                                            : "Las contraseñas no coinciden"}
-                                    </span>
+                                {type === "password" ? (
+                                    <div className={styles.passwordWrapper}>
+                                        <input
+                                            id={field}
+                                            type={(field === 'password' && showPassword) || (field === 'confirmPassword' && showConfirmPassword) ? 'text' : 'password'}
+                                            name={field}
+                                            value={formValues[field]}
+                                            onChange={handleInputChange}
+                                            onKeyDown={handleKeyDown}
+                                            ref={inputRefs[field]}
+                                            className={formErrors[field] ? "input-error" : ""}
+                                            placeholder={placeholder}
+                                        />
+                                        <span
+                                            onClick={() => field === 'password' ? setShowPassword(!showPassword) : setShowConfirmPassword(!showConfirmPassword)}
+                                            className={styles.eyeIcon}
+                                        >
+                                            {(field === 'password' && showPassword) || (field === 'confirmPassword' && showConfirmPassword) ? "🙈" : "👁️"}
+                                        </span>
+                                    </div>
+                                ) : (
+                                    <input
+                                        id={field}
+                                        type={type}
+                                        name={field}
+                                        value={formValues[field]}
+                                        onChange={handleInputChange}
+                                        onKeyDown={handleKeyDown}
+                                        ref={inputRefs[field]}
+                                        className={formErrors[field] ? "input-error" : ""}
+                                        placeholder={placeholder}
+                                    />
                                 )}
-                                {field === "password" && (
-                                    <span style={{ fontSize: "10px", color: "#555" }}>
-                                        8 caracteres, mayúsculas, números y un carácter especial.
-                                    </span>
-                                )}
+                                {formErrors[field] && <span className="input-error-message" style={{ fontSize: "10px" }}>Dato inválido o requerido</span>}
                             </div>
                         ))}
-                        <div className={styles.modal__separator}></div>
-                        <button
-                            type="button"
-                            className="btn-filled"
-                            onClick={handleContinue}
-                        >
-                            Continuar
-                        </button>
                     </form>
-                    <form
-                        style={{ display: activeTab === "pet" ? "block" : "none" }}
-                        autoComplete="off"
-                    >
-                        {pets.map((pet, index) => (
-                            <div key={index} className={styles["pet-block"]}>
-                                <div style={{ marginBottom: "16px" }}>
-                                    <label htmlFor={`pet-name-${index}`}>Nombre</label>
-                                    <input
-                                        id={`pet-name-${index}`}
-                                        type="text"
-                                        value={pet.name}
-                                        onChange={(e) => handlePetChange(index, "name", e.target.value)}
-                                        data-testid={`input-pet-name-${index}`}
-                                        autoComplete="off"
-                                    />
-                                </div>
-                                <div style={{ marginBottom: "16px" }}>
-                                    <label htmlFor={`pet-species-${index}`}>Tipo de Mascota</label>
-                                    <select
-                                        id={`pet-species-${index}`}
-                                        value={pet.species}
-                                        onChange={(e) => handlePetChange(index, "species", e.target.value)}
-                                        data-testid={`input-pet-species-${index}`}
-                                        autoComplete="off"
-                                    >
-                                        <option value="">Seleccione</option>
-                                        <option>Perro</option>
-                                        <option>Gato</option>
-                                        <option>Ave</option>
-                                        <option>Conejo / Roedor</option>
-                                        <option>Pez</option>
-                                        <option>Reptil</option>
-                                        <option>Exótico</option>
-                                        <option>Otro</option>
-                                    </select>
-                                </div>
-                                <div style={{ marginBottom: "16px" }}>
-                                    <label htmlFor={`pet-breed-${index}`}>Raza o Especie</label>
-                                    <input
-                                        id={`pet-breed-${index}`}
-                                        type="text"
-                                        value={pet.breed}
-                                        onChange={(e) => handlePetChange(index, "breed", e.target.value)}
-                                        data-testid={`input-pet-breed-${index}`}
-                                        autoComplete="off"
-                                    />
-                                </div>
-                                <div style={{ marginBottom: "16px" }}>
-                                    <label htmlFor={`pet-age-${index}`}>Edad</label>
-                                    <input
-                                        id={`pet-age-${index}`}
-                                        type="number"
-                                        value={pet.age}
-                                        onChange={(e) => handlePetChange(index, "age", e.target.value)}
-                                        data-testid={`input-pet-age-${index}`}
-                                        autoComplete="off"
-                                    />
-                                </div>
-                                <div className={styles["modal__radio-group"]} style={{ marginBottom: "16px" }}>
-                                    <div>
-                                        <input
-                                            type="radio"
-                                            id={`gender-macho-${index}`}
-                                            name={`gender-${index}`}
-                                            checked={pet.gender === "Macho"}
-                                            onChange={() => handlePetChange(index, "gender", "Macho")}
-                                            data-testid={`input-pet-gender-macho-${index}`}
-                                            autoComplete="off"
-                                        />
-                                        <label htmlFor={`gender-macho-${index}`}>Macho</label>
-                                    </div>
-                                    <div>
-                                        <input
-                                            type="radio"
-                                            id={`gender-hembra-${index}`}
-                                            name={`gender-${index}`}
-                                            checked={pet.gender === "Hembra"}
-                                            onChange={() => handlePetChange(index, "gender", "Hembra")}
-                                            data-testid={`input-pet-gender-hembra-${index}`}
-                                            autoComplete="off"
-                                        />
-                                        <label htmlFor={`gender-hembra-${index}`}>Hembra</label>
-                                    </div>
-                                </div>
-                                <div className={styles.modal__separator}></div>
-                            </div>
-                        ))}
-                        <div className={styles["modal__buttons"]}>
-                            <button
-                                type="button"
-                                className="btn-outline"
-                                onClick={addPet}
-                                data-testid="btn-add-mascota"
-                            >
-                                + Mascota
-                            </button>
-                            <button
-                                type="button"
-                                className="btn-filled"
-                                onClick={handleRegister}
-                                data-testid="btn-registrarse"
-                            >
-                                Registrarse
-                            </button>
-                        </div>
-                    </form>
+                </div>
+
+                <div className={styles.modal__footer}>
+                    <button type="button" className="btn-filled" onClick={handleRegister}>
+                        Registrarse
+                    </button>
                 </div>
             </div>
         </div>
