@@ -74,13 +74,14 @@ const RegistrationForm = () => {
     setIsSubmitting(true);
 
     try {
-      // We only need to send the core data, not confirmPassword
+      // We send the core data, include confirmPassword.
       const userData = {
         fullName: formData.fullName,
         username: formData.username,
         email: formData.email,
         phone: formData.phone,
         password: formData.password,
+        confirmPassword: formData.confirmPassword
       };
 
       // --- API Call using Axios ---
