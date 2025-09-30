@@ -28,6 +28,10 @@ function LoginPage() {
       setMessage(`Login successful! Welcome, ${data.username || username}.`);
       console.log('Authentication successful. Response data:', data);
 
+      // Reset the Form fields after successful submission for a clean slate.
+      setUsername('');
+      setPassword('');
+
     } catch (error) {
       // 4. Handling Errors (Error logic remains in UI for specific display messages)
       if (error.response) {
