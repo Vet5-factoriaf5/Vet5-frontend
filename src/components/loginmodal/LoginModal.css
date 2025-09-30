@@ -17,10 +17,10 @@
 
 .modal__content {
     position: relative;
-    border-radius: 10px;
+    border-radius: clamp(8px, 1vw, 16px);
     box-shadow: 5px 1px 18px -5px rgba(0, 0, 0, 0.9);
     margin: 0 auto;
-    padding: 1rem;
+    padding: clamp(0.75rem, 2vw, 1.5rem);
     background: rgba(255, 255, 255, 0.85);
     backdrop-filter: blur(10px);
     border: 1px solid var(--color-primary);
@@ -28,28 +28,25 @@
 }
 
 .modal__glass {
-    width: 33%;
-    min-width: 450px;
+    width: clamp(320px, 40%, 600px);
 }
 
 @media (max-width: 1024px) and (min-width: 769px) {
     .modal__glass {
-        width: 60%;
-        min-width: 380px;
+        width: clamp(300px, 90%, 500px);
     }
 }
 
 @media (max-width: 768px) and (min-width: 601px) {
     .modal__glass {
-        width: 90%;
-        min-width: 350px;
+        width: clamp(300px, 90%, 500px);
         padding: 1rem;
     }
 }
 
 @media (max-width: 600px) {
     .modal__glass {
-        width: 85%;
+        width: clamp(300px, 90%, 500px);
         max-width: 95%;
         padding: 0.75rem;
     }
@@ -81,7 +78,7 @@
     text-align: center;
     color: var(--color-darkest);
     font-weight: 600;
-    font-size: 1rem;
+    font-size: clamp(0.9rem, 1vw, 1.1rem);
     width: 90%;
     max-width: 400px;
     margin: 0 auto 8px auto;
@@ -99,7 +96,7 @@
     text-align: center;
     color: var(--color-darkest);
     font-weight: 600;
-    font-size: 1rem;
+    font-size: clamp(0.9rem, 1vw, 1.1rem);
     width: 90%;
     max-width: 400px;
     margin: 0 auto 8px auto;

@@ -101,7 +101,7 @@ p {
     border: none;
     border-radius: 7px;
     padding: 1rem 1.9rem;
-    font-size: 1rem;
+    font-size: clamp(0.9rem, 1.2vw, 1.1rem);
     font-weight: 600;
     cursor: pointer;
     transition: opacity 0.3s ease, transform 0.2s ease;

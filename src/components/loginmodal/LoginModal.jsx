@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import "./LoginModal.css";
 import "../../index.css";
 
-const LoginModal = ({ isOpen, onClose, users }) => {
+const LoginModal = ({ isOpen, onClose, users, closeDelay = 3000 }) => {
     const [formValues, setFormValues] = useState({
         identifier: "",
         password: "",
@@ -35,7 +35,7 @@ const LoginModal = ({ isOpen, onClose, users }) => {
                 setFormValues({ identifier: "", password: "" });
                 setSuccessMessage("");
                 onClose();
-            }, 3000);
+            }, closeDelay);
         } else {
             setErrorMessage("Usuario o contraseña incorrectos");
             setSuccessMessage("");
@@ -55,12 +55,12 @@ const LoginModal = ({ isOpen, onClose, users }) => {
                 <h2>Iniciar Sesión</h2>
                 <div className="modal__separator"></div>
                 {successMessage && (
-                    <div className="modal__success-message">
+                    <div className="modal__success-message" data-testid="success-message">
                         {successMessage}
                     </div>
                 )}
                 {errorMessage && (
-                    <div className="modal__error-message">
+                    <div className="modal__error-message" data-testid="error-message">
                         {errorMessage}
                     </div>
                 )}
@@ -88,7 +88,7 @@ const LoginModal = ({ isOpen, onClose, users }) => {
                         />
                     </div>
                     <div className="modal__separator"></div>
-                    <button type="submit" className="btn-filled">
+                    <button type="submit" className="btn-filled" data-testid="login-button">
                         Iniciar Sesión
                     </button>
                 </form>

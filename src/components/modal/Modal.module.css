@@ -1,4 +1,14 @@
- .modal-overlay {
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    font-size: clamp(14px, 1.2vw, 18px);
+}
+
+.modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
@@ -114,7 +124,7 @@
     display: flex;
     gap: 48px;
     margin-top: 24px !important;
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
     width: 100%;
     justify-content: center;
 }
@@ -123,37 +133,28 @@
     Media Queries
   ======================== */
 
+.modal__glass {
+    width: clamp(300px, 80%, 600px);
+}
+
 @media (min-width: 1200px) {
-    .modal__glass {
-        width: 33%;
-        min-width: 450px;
-    }
 }
 
 @media (max-width: 1024px) and (min-width: 769px) {
-    .modal__glass {
-        width: 60%;
-        min-width: 380px;
-    }
 }
 
 @media (max-width: 768px) and (min-width: 601px) {
     .modal__glass {
-        width: 90%;
-        min-width: 350px;
         padding: 1.5rem;
     }
 }
 
 @media (max-width: 600px) {
     .modal__glass {
-        width: 85%;
-        max-width: 95%;
         padding: 1rem;
     }
     
     .modal__buttons {
-        flex-wrap: wrap;
         gap: 16px;
     }
     
@@ -308,4 +309,4 @@
     box-shadow: 5px 1px 18px -5px rgba(0, 0, 0, 0.9);
     animation: fadeInOut 3s ease forwards;
     position: relative;
-} 
+}
