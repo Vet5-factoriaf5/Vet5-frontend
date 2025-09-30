@@ -3,7 +3,7 @@
   ======================== */
 .home {
     font-family: var(--font-family-base);
-    height: 100vh;
+    min-height: 100vh;
     width: 100%;
     background-size: cover;
     background-position: center;
@@ -17,7 +17,7 @@
     color: var(--color-light-grey);
     text-align: left;
     /* Transición suave para todos los cambios de dispositivos */
-    transition: all 0.5s ease-in-out; 
+    transition: background 0.5s ease-in-out, color 0.5s ease-in-out; 
 }
 
 /* ========================
@@ -207,5 +207,16 @@ p {
     .btn-registrate {
         margin-top: 10px; /* Espacio entre el texto y el botón */
         margin-bottom: 20px;
+    }
+}
+
+@media (min-width: 1200px) {
+    .home__header {
+        max-width: 40%;
+        padding-left: 80px;
+    }
+
+    .home__header h1 {
+        font-size: 3.5rem;
     }
 }

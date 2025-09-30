@@ -87,7 +87,7 @@ const LoginModal = ({ isOpen, onClose, users, closeDelay = 3000 }) => {
                             autoComplete="off"
                         />
                     </div>
-                    <div className="modal__separator"></div>
+                    { <div className="modal__separator_down"></div>}
                     <button type="submit" className="btn-filled" data-testid="login-button">
                         Iniciar Sesión
                     </button>

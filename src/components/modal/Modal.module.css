@@ -1,4 +1,16 @@
 /* ========================================
+    Global Styles
+   ======================================== */
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+    font-size: clamp(14px, 1vw + 1rem, 18px);
+}
+
+/* ========================================
     Contenedor Principal del Modal
    ======================================== */
 .modal {
@@ -12,6 +24,7 @@
     align-items: center;
     z-index: 1000;
     background-color: rgba(0, 0, 0, 0.3);
+    padding: 1rem; /* Added padding for small devices */
 }
 
 .modal__content {
@@ -27,6 +40,8 @@
     max-height: 90vh; /* Altura máxima para adaptarse a todas las pantallas */
     display: flex;
     flex-direction: column;
+    max-width: 100%; /* Ensure it doesn't overflow on small screens */
+    overflow: hidden;
 }
 
 .modal__close {
@@ -61,6 +76,8 @@
     overflow-y: auto; /* Activa el scroll vertical SOLO si es necesario */
     padding: 0.5rem; /* Pequeño padding para el área de scroll */
     margin: 0 -0.5rem; /* Compensa el padding para mantener la alineación */
+    -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+    max-height: calc(90vh - 120px); /* Ensure content area is scrollable and fits */
 }
 
 /* ========================================
@@ -78,7 +95,7 @@
     min-height: 18px; /* Altura mínima para alinear todas las etiquetas */
     margin-bottom: 4.5px; /* Espacio entre la etiqueta y el campo */
     font-weight: 600;
-    font-size: 0.9rem;
+    font-size: clamp(0.8rem, 0.9vw, 0.9rem);
     color: var(--color-text);
 }
 
@@ -87,7 +104,7 @@
     display: block;
     width: 100%;
     padding: 12px 15px; /* Padding interno para que el texto no se pegue */
-    font-size: 0.8rem;
+    font-size: clamp(0.7rem, 0.8vw, 0.8rem);
     border: 1px solid var(--color-medium-grey);
     border-radius: 8px;
     box-sizing: border-box;
@@ -156,7 +173,7 @@
     text-align: center;
     color: var(--color-darkest);
     font-weight: 600;
-    font-size: 1.2rem;
+    font-size: clamp(1rem, 1.5vw, 1.2rem);
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
     animation: fadeInOut 2s ease-in-out forwards;
 }
@@ -175,4 +192,32 @@
     border-top: 1px solid #eee;
     border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;
+    position: sticky;
+    bottom: 0;
+    z-index: 15;
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+    .modal__content {
+        width: 100%;
+        max-height: 95vh;
+        padding: 1rem 1.5rem 0;
+    }
+
+    .modal__tab-content {
+        max-height: calc(95vh - 120px);
+        padding: 0.5rem 0.25rem;
+        margin: 0 -0.25rem;
+    }
+
+    .modal__footer {
+        padding: 1rem 0;
+    }
+
+    .modal__close {
+        top: 10px;
+        right: 10px;
+        font-size: 1.3rem;
+    }
 }

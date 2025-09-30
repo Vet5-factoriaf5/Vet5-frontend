@@ -8,14 +8,13 @@ function Home({ onRegisterClick }) {
     return (
         <div
             className="home"
-            /* Estilos en línea para la imagen de fondo */
             style={{
                 backgroundImage: `url(${bannerImage})`,
                 backgroundSize: "cover",
-                backgroundPosition: "center",
+                backgroundPosition: "center center",
                 backgroundRepeat: "no-repeat",
-                height: "100vh",
-                width: "100%",
+                minHeight: "100vh",
+                width: "100%"
             }}
         >
             <header className="home__header">
@@ -35,7 +34,7 @@ function Home({ onRegisterClick }) {
                     Regístrate junto a tu mascota y accede a promociones exclusivas y servicios prioritarios.
                 </h3>
                 <div className="home__cta">
-                    <h3>¡Únete a nuestra familia!.</h3>
+                    <h3>¡Únete a nuestra familia!</h3>
                     <button
                         className="btn-registrate"
                         onClick={onRegisterClick} // Abre el modal de registro
