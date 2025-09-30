@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import api from '../api/axiosConfig'; 
+import api from '../api/axiosConfig';
+import {Link} from 'react-router-dom'; 
 
 /**
  * Basic Login Form Component
@@ -136,6 +137,9 @@ function LoginPage() {
             </button>
           </div>
         </form>
+        <Link to="/">
+          <button>Go Home</button>
+        </Link>
         <p className="mt-6 text-xs text-center text-gray-500">
           Request URL: <code className="bg-gray-200 p-1 rounded text-indigo-600 break-all">http://localhost:8080/api/v1/login</code>
         </p>
