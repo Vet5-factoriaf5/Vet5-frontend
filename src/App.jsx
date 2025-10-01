@@ -1,32 +1,41 @@
 import React, { useState } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import Home from "./pages/home/Home";
 import Nav from "./components/nav/Nav";
 import Footer from "./components/footer/Footer";
 import ModalComponent from "./components/modal/Modal";
 import LoginModal from "./components/loginmodal/LoginModal";
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import UserDashboard from "./pages/user/UserDashboard";
 import "./App.css";
+
+// Componente de ruta privada
+const PrivateRoute = ({ children, role }) => {
+  const token = localStorage.getItem("token");
+  const userRole = localStorage.getItem("role");
+
+  if (!token) return <Navigate to="/login" />;
+  if (role && userRole !== role) return <Navigate to="/" />;
+  return children;
+};
 
 function App() {
   const [isRegisterOpen, setIsRegisterOpen] = useState(false);
   const [isLoginOpen, setIsLoginOpen] = useState(false);
 
-  // Estado que contiene todos los usuarios registrados
   const [users, setUsers] = useState([
     {
       name: "Juan González",
       dni: "12345678A",
       email: "juan@gmai.com",
       phone: "627123456",
-      password: "?Jg12345"
+      password: "?Jg12345",
+      role: "USER"
     }
   ]);
 
   const handleRegister = (newUserData) => {
-    setUsers((prevUsers) => {
-      console.log("Nuevo usuario registrado:", newUserData);
-      return [...prevUsers, newUserData];
-    });
+    setUsers((prevUsers) => [...prevUsers, newUserData]);
   };
 
   return (
@@ -35,7 +44,22 @@ function App() {
         <Nav onLoginClick={() => setIsLoginOpen(true)} />
         <Routes>
           <Route path="/" element={<Home onRegisterClick={() => setIsRegisterOpen(true)} />} />
-          <Route path="/dashboard" element={<div>Dashboard</div>} />
+          <Route
+            path="/admin"
+            element={
+              <PrivateRoute role="ADMIN">
+                <AdminDashboard />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/user"
+            element={
+              <PrivateRoute role="USER">
+                <UserDashboard />
+              </PrivateRoute>
+            }
+          />
         </Routes>
         <Footer />
 
