@@ -1,34 +1,76 @@
-import React from "react";
-import { Routes, Route, Link } from "react-router-dom";
+// src/App.jsx (FIXED VERSION)
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider, useAuth } from './context/AuthContext';
+import HomeTest from './pages/homeTest/HomeTest';
+import LoginPage from './pages/LoginPageTest';
+import RegisterPage from './pages/RegisterPageTest';
+import AdminDashboard from './components/dashboards/AdminDashboard';
+import UserDashboard from './components/dashboards/UserDashboard';
+import ProtectedRoute from './components/ProtectedRoute';
 
-import HomeTest from "./pages/homeTest/HomeTest";
-import LoginTest from "./pages/LoginPageTest";
-import RegisterTest from "./pages/RegisterPageTest";
+/**
+ * Main Application Component with Role-Based Routing
+ * Fixed router structure to prevent nested routers
+ * 
+ * @author gml
+ * @version 2.1
+ */
+function AppRoutes() {
+  const { user } = useAuth();
+
+  return (
+    <Routes>
+      {/* Public Routes */}
+      <Route path="/" element={<HomeTest />} />
+      <Route 
+        path="/login" 
+        element={
+          user ? (
+            <Navigate 
+              to={user.role === 'ADMIN' ? '/admin/dashboard' : '/user/dashboard'} 
+              replace 
+            />
+          ) : (
+            <LoginPage />
+          )
+        } 
+      />
+      <Route path="/register" element={<RegisterPage />} />
+
+      {/* Protected Admin Routes */}
+      <Route 
+        path="/admin/dashboard" 
+        element={
+          <ProtectedRoute requiredRole="ADMIN">
+            <AdminDashboard />
+          </ProtectedRoute>
+        } 
+      />
+
+      {/* Protected User Routes */}
+      <Route 
+        path="/user/dashboard" 
+        element={
+          <ProtectedRoute requiredRole="USER">
+            <UserDashboard />
+          </ProtectedRoute>
+        } 
+      />
+
+      {/* Fallback route */}
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
+  );
+}
 
 function App() {
   return (
-    <Routes>
-      {/* Route for the "Home Test Page" at the root URL */}
-      <Route path="/" element={<HomeTest />} />
-
-      {/* Route for the "Login Form Test" */}
-      <Route path="/login" element={<LoginTest />} />
-
-      {/* Route for the "Registration Form Test" */}
-      <Route path="/register" element={<RegisterTest />} />
-
-      {/* Optional: Simple 404 page */}
-      <Route
-        path="*"
-        element={
-          <div style={{ textAlign: "center", padding: "50px" }}>
-            <h1>404</h1>
-            <p>Page Not Found</p>
-            <Link to="/">Go Home</Link>
-          </div>
-        }
-      />
-    </Routes>
+    <AuthProvider>
+      <Router>
+        <AppRoutes />
+      </Router>
+    </AuthProvider>
   );
 }
 
