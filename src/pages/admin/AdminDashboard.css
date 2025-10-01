@@ -1,0 +1,28 @@
+/* src/pages/admin/AdminDashboard.css */
+.admin-dashboard {
+    min-height: 80vh;
+    padding: 20px;
+    background-color: #f8f9fa;
+}
+
+.dashboard-header {
+    background: transparent;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.dashboard-header h3 {
+    margin: 0;
+    color: var(--color-text);
+}
+
+.admin-info {
+    font-size: 16px;
+    color: var(--color-primary);
+    font-weight: bold;
+}
+
