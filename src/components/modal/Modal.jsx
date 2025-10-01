@@ -1,12 +1,13 @@
+// Modal.jsx - VERSIÓN ACTUALIZADA
 import React, { useState, useRef } from "react";
 import styles from "./Modal.module.css";
-import "../../index.css"; // Asegúrate de que tus estilos globales estén importados
+import "../../index.css";
 
 const ModalComponent = ({ isOpen, onClose, onRegister }) => {
     // --- ESTADOS DEL COMPONENTE ---
     const [formValues, setFormValues] = useState({
         name: "",
-        dni: "",
+        dni: "",           // ✅ Este será el username en el backend
         email: "",
         phone: "",
         password: "",
@@ -15,7 +16,7 @@ const ModalComponent = ({ isOpen, onClose, onRegister }) => {
     const [formErrors, setFormErrors] = useState({});
     const [successMessage, setSuccessMessage] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
-    
+
     // Estados independientes para la visibilidad de cada campo de contraseña
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -38,7 +39,7 @@ const ModalComponent = ({ isOpen, onClose, onRegister }) => {
     // --- LÓGICA DE VALIDACIÓN ---
     const validators = {
         name: (val) => val.trim().length > 0,
-        dni: (val) => /^[XYZ0-9]{1}[0-9]{7}[A-Z]{1}$/.test(val),
+        dni: (val) => /^[XYZ0-9]{1}[0-9]{7}[A-Z]{1}$/.test(val), // Validación DNI español
         email: (val) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val),
         phone: (val) => /^[\d\s+\-()]{6,}$/.test(val),
         password: (val) => /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{8,}$/.test(val),
@@ -56,7 +57,7 @@ const ModalComponent = ({ isOpen, onClose, onRegister }) => {
             setFormErrors((prev) => ({ ...prev, [name]: false }));
         }
     };
-    
+
     // Permite navegar entre campos con la tecla Enter
     const handleKeyDown = (e) => {
         if (e.key === "Enter") {
@@ -74,6 +75,7 @@ const ModalComponent = ({ isOpen, onClose, onRegister }) => {
         e.preventDefault();
         const errors = {};
         let hasErrors = false;
+
         // Valida todos los campos
         Object.keys(validators).forEach((key) => {
             if (!validators[key](formValues[key])) {
@@ -92,7 +94,12 @@ const ModalComponent = ({ isOpen, onClose, onRegister }) => {
         // Si no hay errores, procede con el registro
         setErrorMessage("");
         setSuccessMessage("¡Usuario registrado con éxito!");
-        onRegister({ ...formValues });
+
+        // ✅ Enviar los datos al backend - el DNI será el username
+        onRegister({
+            ...formValues
+            // El DNI ya está en formValues.dni y se enviará como username al backend
+        });
 
         // Espera 2 segundos para que el usuario vea el mensaje y luego cierra
         setTimeout(() => {
@@ -114,19 +121,28 @@ const ModalComponent = ({ isOpen, onClose, onRegister }) => {
                 <div className={styles.modal__separator}></div>
 
                 {errorMessage && <div className={styles["modal__error-message"]}>{errorMessage}</div>}
-                
+
                 <div className={styles["modal__tab-content"]}>
                     <form autoComplete="off">
                         {[
-                            { field: "name", label: "Nombre", type: "text" },
-                            { field: "dni", label: "DNI", type: "text" },
-                            { field: "email", label: "Email", type: "email" },
-                            { field: "phone", label: "Teléfono", type: "tel" },
-                            { field: "password", label: "Contraseña", type: "password" },
-                            { field: "confirmPassword", label: "Confirmar Contraseña", type: "password" },
-                        ].map(({ field, label, placeholder, type }) => (
+                            { field: "name", label: "Nombre", type: "text", placeholder: "Tu nombre completo" },
+                            {
+                                field: "dni",
+                                label: "DNI",
+                                type: "text",
+                                placeholder: "Ej: 12345678A",
+                                important: true  // ✅ Marcar como campo importante
+                            },
+                            { field: "email", label: "Email", type: "email", placeholder: "tu@email.com" },
+                            { field: "phone", label: "Teléfono", type: "tel", placeholder: "612345678" },
+                            { field: "password", label: "Contraseña", type: "password", placeholder: "Mín. 8 caracteres" },
+                            { field: "confirmPassword", label: "Confirmar Contraseña", type: "password", placeholder: "Repite tu contraseña" },
+                        ].map(({ field, label, placeholder, type, important }) => (
                             <div key={field} className={styles.formField}>
-                                <label htmlFor={field}>{label}</label>
+                                <label htmlFor={field}>
+                                    {label}
+                                    {important && <span style={{ color: 'red', marginLeft: '4px' }}>*</span>}
+                                </label>
                                 {type === "password" ? (
                                     <div className={styles.passwordWrapper}>
                                         <input
@@ -160,7 +176,11 @@ const ModalComponent = ({ isOpen, onClose, onRegister }) => {
                                         placeholder={placeholder}
                                     />
                                 )}
-                                {formErrors[field] && <span className="input-error-message" style={{ fontSize: "10px" }}>Dato inválido o requerido</span>}
+                                {formErrors[field] && (
+                                    <span className="input-error-message" style={{ fontSize: "10px" }}>
+                                        {field === 'dni' ? 'Formato de DNI inválido' : 'Dato inválido o requerido'}
+                                    </span>
+                                )}
                             </div>
                         ))}
                     </form>

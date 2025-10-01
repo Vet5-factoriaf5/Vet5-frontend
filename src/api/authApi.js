@@ -1,49 +1,70 @@
-// src/api/authApi.js
-
 import api from './axiosConfig';
 
 /**
- * Centralized Authentication API Service (Business Logic / Centralization).
- * 
- * This module exports functions for all authentication-related endpoints.
- * It uses the pre-configured `api` instance from `axiosConfig.js`.
- * 
- * This file exports functions (e.g., `login(user, password)`, `register(data)`)
- * that handle endpoint-specific logic like constructing URLs, building headers
- * (like Basic Auth), handling request bodies, and dealing with success/error
- * responses before the data reaches the component.
- * 
+ * Login con Basic Auth (GET /login)
  */
+export const login = async (identifier, password) => {
+    try {
+        const credentialsBase64 = btoa(`${identifier}:${password}`);
 
-// --- LOGIN (GET /login - Basic Auth) ---
-export const login = async (username, password) => {
-    // 1. Logic to construct the Basic Auth Header Value
-    // Format: "username:password" encoded in Base64
-    const credentialsBase64 = btoa(`${username}:${password}`);
+        const response = await api.get('/login', {
+            headers: {
+                'Authorization': `Basic ${credentialsBase64}`,
+            },
+        });
 
-    // 2. Making the Request using the configured `api` instance.
-    // The `baseURL` ('http://localhost:8080/api/v1') is automatically prepended.
-    const response = await api.get('/login', {
-        headers: {
-            // Set the Authoriazation header dynamically for Basic Auth
-            'Authorization': `Basic ${credentialsBase64}`,
-        },
-    });
-
-    // Return the response data (UserDTOResponse)
-    return response.data;
+        console.log("Login response:", response.data);
+        return response.data;
+    } catch (error) {
+        console.error('Login error:', error);
+        throw error;
+    }
 };
 
-// --- REGISTRATION (POST /register) ---
 /**
- * @param {object} userData - Contains `fullName`, `username`, `email`, `phone`, `password`, and `confirmPassword`.
+ * Registro de usuario (POST /register)
+ * IMPORTANTE: El backend espera 'username' (DNI), no 'dni'
  */
 export const register = async (userData) => {
-    // Making the POST Request using the configured `api` instance:
-    const response = await api.post('/register', userData);
+    try {
+        // Mapear campos del frontend al backend
+        const backendUserData = {
+            fullName: userData.name,        // 'name' en frontend → 'fullName' en backend
+            username: userData.dni,         // 'dni' en frontend → 'username' en backend  
+            email: userData.email,
+            phone: userData.phone,
+            password: userData.password,
+            confirmPassword: userData.confirmPassword
+        };
 
-    // Return the response data (UserDTOResponse)
-    return response.data;
+        console.log("Enviando registro al backend:", backendUserData);
+
+        const response = await api.post('/register', backendUserData);
+        console.log("Register response:", response.data);
+        return response.data;
+    } catch (error) {
+        console.error('Register error:', error);
+
+        // Mejorar mensajes de error
+        if (error.response?.status === 409) {
+            throw new Error("El usuario con este DNI ya existe");
+        } else if (error.response?.status === 400) {
+            throw new Error(error.response.data || "Datos de registro inválidos");
+        } else {
+            throw new Error("Error del servidor: " + (error.response?.data || error.message));
+        }
+    }
 };
 
-// TODO: You should add more functions here (e.g., `logout`, `password reset`, etc.)
+/**
+ * Logout (POST /logout)
+ */
+export const logout = async () => {
+    try {
+        const response = await api.post('/logout');
+        return response.data;
+    } catch (error) {
+        console.error('Logout error:', error);
+        throw error;
+    }
+};

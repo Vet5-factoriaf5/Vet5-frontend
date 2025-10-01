@@ -1,9 +1,8 @@
 import React, { useState } from "react";
 import "./LoginModal.css";
 import "../../index.css";
-import axios from "../../api/axiosConfig.js"; // Ajusta la ruta según tu proyecto
 
-const LoginModal = ({ isOpen, onClose, closeDelay = 3000 }) => {
+const LoginModal = ({ isOpen, onClose, onLogin }) => {
     const [formValues, setFormValues] = useState({ identifier: "", password: "" });
     const [errorMessage, setErrorMessage] = useState("");
     const [successMessage, setSuccessMessage] = useState("");
@@ -12,28 +11,25 @@ const LoginModal = ({ isOpen, onClose, closeDelay = 3000 }) => {
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        setFormValues((prev) => ({ ...prev, [name]: value }));
+        setFormValues(prev => ({ ...prev, [name]: value }));
         setErrorMessage("");
         setSuccessMessage("");
     };
 
-    const handleLogin = async (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
+        const { identifier, password } = formValues;
+
         try {
-            const response = await axios.post("/auth/login", formValues);
+            await onLogin(identifier, password);
+            setSuccessMessage("¡Inicio de sesión exitoso!");
+            setErrorMessage("");
 
-            // Suponiendo que el backend devuelve un token
-            if (response.status === 200 && response.data.token) {
-                localStorage.setItem("token", response.data.token);
-                setSuccessMessage("¡Inicio de sesión exitoso!");
-                setErrorMessage("");
-
-                setTimeout(() => {
-                    setFormValues({ identifier: "", password: "" });
-                    setSuccessMessage("");
-                    onClose();
-                }, closeDelay);
-            }
+            setTimeout(() => {
+                setFormValues({ identifier: "", password: "" });
+                setSuccessMessage("");
+                onClose();
+            }, 2000);
         } catch (err) {
             setErrorMessage("Usuario o contraseña incorrectos");
             setSuccessMessage("");
@@ -59,9 +55,9 @@ const LoginModal = ({ isOpen, onClose, closeDelay = 3000 }) => {
                     </div>
                 )}
 
-                <form onSubmit={handleLogin} autoComplete="off">
+                <form onSubmit={handleSubmit} autoComplete="off">
                     <div style={{ marginBottom: "16px" }}>
-                        <label htmlFor="identifier">DNI</label>
+                        <label htmlFor="identifier">Usuario (DNI)</label>
                         <input
                             id="identifier"
                             name="identifier"
@@ -69,6 +65,7 @@ const LoginModal = ({ isOpen, onClose, closeDelay = 3000 }) => {
                             value={formValues.identifier}
                             onChange={handleInputChange}
                             autoComplete="off"
+                            required
                         />
                     </div>
 
@@ -81,6 +78,7 @@ const LoginModal = ({ isOpen, onClose, closeDelay = 3000 }) => {
                             value={formValues.password}
                             onChange={handleInputChange}
                             autoComplete="off"
+                            required
                         />
                     </div>
 
